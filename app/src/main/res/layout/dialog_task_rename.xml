@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16sp"
+    android:orientation="vertical"
+    android:background="@color/bg_color"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16sp"
+        android:textSize="32sp"
+        android:textColor="@color/foreground_color"
+        android:text="@string/rename_app"
+        android:gravity="center"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8sp"
+        android:padding="16sp"
+        android:orientation="vertical"
+        android:background="@color/bg_secondary"
+        android:focusableInTouchMode="true">
+
+        <EditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <com.rama.adiskide.widgets.WdButton
+        android:id="@+id/yes_button"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="8sp"
+        android:layout_height="wrap_content"
+        android:background="@color/danger"
+        android:text="@string/save" />
+
+    <com.rama.adiskide.widgets.WdButton
+        android:id="@+id/reset_button"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="8sp"
+        android:layout_height="wrap_content"
+        android:background="@color/danger"
+        android:text="@string/reset" />
+
+    <com.rama.adiskide.widgets.WdButton
+        android:id="@+id/no_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/button_primary_color"
+        android:text="@string/cancel" />
+</LinearLayout>

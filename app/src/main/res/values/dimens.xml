@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="theme_box_size">48dp</dimen>
+    <dimen name="theme_box_margin">8dp</dimen>
+</resources>

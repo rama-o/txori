@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/bg_color">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/mako"
+            android:layout_marginBottom="16sp" />
+
+        <TextView
+            android:text="@string/app_name"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/foreground_color" />
+
+        <TextView
+            android:text="@string/app_description"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16sp"
+            android:textAlignment="center"
+            android:textColor="@color/foreground_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:textSize="18sp"
+                android:textColor="@color/foreground_color"
+                android:text="@string/app_header"
+                android:textStyle="bold" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_user"
+                android:text="@string/app_creator" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_seedlings"
+                android:text="@string/app_name" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_github"
+                android:text="@string/main_project_url" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_octagon_check_solid"
+                android:text="@string/icon_ads_desc" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_octagon_check_solid"
+                android:text="@string/icon_block_desc" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_octagon_check_solid"
+                android:text="@string/icon_location_desc" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_octagon_check_solid"
+                android:text="@string/icon_offline_desc" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_octagon_check_solid"
+                android:text="@string/gpl3_desc" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:textSize="18sp"
+                android:textColor="@color/foreground_color"
+                android:text="@string/icons_header"
+                android:textStyle="bold" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_user"
+                android:text="@string/hackernoon_creator" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_seedlings"
+                android:text="@string/hackernoon_product" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_github"
+                android:text="@string/hackernoon_url" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_octagon_check_solid"
+                android:text="@string/cc_4_desc" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:textSize="18sp"
+                android:textColor="@color/foreground_color"
+                android:text="@string/fonts_header"
+                android:textStyle="bold" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_user"
+                android:text="@string/jersey_creator" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_seedlings"
+                android:text="@string/font_jersey_label" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_github"
+                android:text="@string/jersey_url" />
+
+            <com.rama.adiskide.widgets.WdLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/icon_octagon_check_solid"
+                android:text="@string/ofl_1_1_desc" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/disabled"
+            android:layout_marginVertical="16sp" />
+
+        <com.rama.adiskide.widgets.WdButton
+            android:id="@+id/close_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/button_primary_color"
+            android:text="@string/go_back_label" />
+    </LinearLayout>
+</ScrollView>

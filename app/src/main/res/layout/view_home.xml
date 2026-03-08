@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/bgColor"
+    android:textColor="?attr/foregroundColor">
+
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:orientation="horizontal"
+        android:gravity="start|center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/toggle_visibility"
+            android:layout_marginEnd="8sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12sp">
+
+            <ImageView
+                android:id="@+id/toggle_visibility_img"
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:src="@drawable/icon_cog"
+                android:textSize="16sp"
+                android:contentDescription="Toggle Visibility" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/pet_name"
+            android:textSize="24sp"
+            android:layout_marginEnd="8sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adiskide" />
+
+        <TextView
+            android:id="@+id/xp"
+            android:layout_marginEnd="8sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/accent_tertiary"
+            android:text="100K" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/friend"
+        android:background="#337AA6"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="8sp"
+        android:layout_height="400dp"></FrameLayout>
+
+    <ListView
+        android:id="@+id/task_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8sp"
+        android:layout_marginBottom="8sp"
+        android:layout_weight="1" />
+
+    <com.rama.adiskide.widgets.WdButton
+        android:id="@+id/add_task_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/button_secondary_color"
+        android:text="@string/add_task" />
+
+</LinearLayout>
