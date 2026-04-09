@@ -12,15 +12,14 @@ class DatabaseHelper(context: Context) :
 
         db.execSQL(
             """
-            CREATE TABLE tasks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                type TEXT,
-                label TEXT,
-                difficulty INTEGER,
-                completed BOOL,
-                date_creation INTEGER,
-                date_completion INTEGER
-            )
+        CREATE TABLE tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            label TEXT,
+            duration INTEGER,
+            task_order INTEGER,
+            task_group INTEGER,
+            completion_count INTEGER,
+        )
         """.trimIndent()
         )
 
@@ -34,35 +33,25 @@ class DatabaseHelper(context: Context) :
 
     private fun insertTask(
         db: SQLiteDatabase,
-        type: TaskType,
         label: String,
-        date: Long,
-        difficulty: Int,
-        completed: Boolean
+        duration: Int,
+        task_order: Int,
+        task_group: Int,
+        completion_count: Int,
     ) {
 
         val values = ContentValues().apply {
-            put("type", type.name)
             put("label", label)
-            put("difficulty", difficulty)
-            put("date_creation", date)
-            put("completed", completed)
+            put("duration", duration)
+            put("task_order", task_order)
+            put("task_group", task_group)
+            put("completion_count", completion_count)
         }
 
         db.insert("tasks", null, values)
     }
 
     private fun insertInitialTasks(db: SQLiteDatabase) {
-
-        val now = System.currentTimeMillis()
-
-        insertTask(db, TaskType.ROUTINE, "Drink water", now, 5, false)
-        insertTask(db, TaskType.ROUTINE, "Clean room", now, 5, false)
-        insertTask(db, TaskType.ROUTINE, "Brush teeth", now, 5, false)
-        insertTask(db, TaskType.ROUTINE, "Take shower", now, 5, false)
-        insertTask(db, TaskType.ROUTINE, "Stretch", now, 5, false)
-        insertTask(db, TaskType.BURNER, "Run", now, 5, false)
-        insertTask(db, TaskType.BURNER, "Run More", now, 5, false)
-
+        insertTask(db, "Drink water", 1, 1, 1, 0)
     }
 }
