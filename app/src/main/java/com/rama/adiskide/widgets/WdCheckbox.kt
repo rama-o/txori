@@ -18,7 +18,8 @@ class WdCheckbox @JvmOverloads constructor(
     init {
         LayoutInflater.from(context).inflate(R.layout.wd_checkbox, this, true)
         checkBox = findViewById(R.id.checkbox)
-
+        checkBox.setSaveEnabled(false)
+        checkBox.id = generateViewId()
         attrs?.let { setAttrs(context, it) }
     }
 

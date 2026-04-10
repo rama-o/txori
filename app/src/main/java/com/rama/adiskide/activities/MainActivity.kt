@@ -27,7 +27,7 @@ class MainActivity : CsActivity() {
         val db = dbHelper.readableDatabase
 
         val tasks = mutableListOf<Task>()
-        val cursor = db.rawQuery("SELECT * FROM tasks WHERE completed = 0", null)
+        val cursor = db.rawQuery("SELECT * FROM tasks", null)
 
         while (cursor.moveToNext()) {
 
