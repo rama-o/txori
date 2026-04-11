@@ -120,6 +120,45 @@
             android:textColor="@color/foreground" />
 
         <FrameLayout
+            android:id="@+id/add_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12sp">
+
+            <ImageView
+                android:layout_width="18sp"
+                android:layout_height="18sp"
+                android:src="@drawable/icon_plus_solid"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/delete_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12sp">
+
+            <ImageView
+                android:layout_width="18sp"
+                android:layout_height="18sp"
+                android:src="@drawable/icon_times_solid"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/reset_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12sp">
+
+            <ImageView
+                android:layout_width="18sp"
+                android:layout_height="18sp"
+                android:src="@drawable/icon_refresh"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/start_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -143,6 +182,14 @@
         android:dividerHeight="8sp"
         android:layout_marginBottom="8sp"
         android:layout_weight="1" />
+
+    <com.rama.adiskide.widgets.WdButton
+        android:id="@+id/cancel_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8sp"
+        android:background="@color/button_secondary_color"
+        android:text="+ Add Group" />
 
     <LinearLayout
         android:layout_width="match_parent"
