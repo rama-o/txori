@@ -10,7 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="32sp"
+        android:paddingTop="32sp"
+        android:paddingBottom="32sp"
         android:gravity="center"
         android:layout_marginBottom="16sp"
         android:orientation="vertical">
