@@ -20,9 +20,9 @@
             android:layout_height="wrap_content"
             android:textSize="24sp"
             android:layout_gravity="center"
-            android:textColor="@color/foreground_color"
+            android:textColor="@color/foreground"
             android:id="@+id/current_task_name"
-            android:text="Chest Opener" />
+            android:text="Olá!" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,9 +30,9 @@
             android:textSize="56sp"
             android:layout_marginBottom="8sp"
             android:layout_gravity="center"
-            android:textColor="@color/foreground_color"
+            android:textColor="@color/foreground"
             android:id="@+id/current_task_timer"
-            android:text="02:00" />
+            android:text="00:00" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -113,11 +113,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="[-] Workout :: 40 Tasks :: 44m"
+            android:text="[-] Workout :: 44:00"
             android:textSize="18sp"
             android:paddingTop="12sp"
             android:paddingBottom="12sp"
-            android:textColor="@color/foreground_color" />
+            android:textColor="@color/foreground" />
 
         <FrameLayout
             android:id="@+id/start_group"
@@ -168,6 +168,23 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/settings_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/button_primary_color"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:padding="12sp">
+
+            <ImageView
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_cog"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/stopwatch_nav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -198,23 +215,6 @@
                 android:layout_height="24sp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon_clock"
-                android:textSize="16sp" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/settings_nav"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/button_primary_color"
-            android:layout_marginEnd="2dp"
-            android:layout_weight="1"
-            android:padding="12sp">
-
-            <ImageView
-                android:layout_width="24sp"
-                android:layout_height="24sp"
-                android:layout_gravity="center"
-                android:src="@drawable/icon_cog"
                 android:textSize="16sp" />
         </FrameLayout>
 

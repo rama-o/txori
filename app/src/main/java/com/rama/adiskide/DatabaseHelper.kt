@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 
 class DatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, "tasks.db", null, 15) {
+    SQLiteOpenHelper(context, "tasks.db", null, 17) {
 
     override fun onCreate(db: SQLiteDatabase) {
 
@@ -22,25 +22,25 @@ class DatabaseHelper(context: Context) :
             """.trimIndent()
         )
 
-        // WORKOUTS
+        // SESSIONS (was groups)
         db.execSQL(
             """
-            CREATE TABLE workouts (
+            CREATE TABLE sessions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT
             )
             """.trimIndent()
         )
 
-        // STEPS / ORDER
+        // SESSION STEPS (was group_steps)
         db.execSQL(
             """
-            CREATE TABLE workout_steps (
+            CREATE TABLE session_steps (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                workout_id INTEGER,
+                session_id INTEGER,
                 task_id INTEGER,
                 step_order INTEGER,
-                FOREIGN KEY(workout_id) REFERENCES workouts(id),
+                FOREIGN KEY(session_id) REFERENCES sessions(id),
                 FOREIGN KEY(task_id) REFERENCES tasks(id)
             )
             """.trimIndent()
@@ -50,15 +50,14 @@ class DatabaseHelper(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS workout_steps")
-        db.execSQL("DROP TABLE IF EXISTS workouts")
+        db.execSQL("DROP TABLE IF EXISTS session_steps")
+        db.execSQL("DROP TABLE IF EXISTS sessions")
         db.execSQL("DROP TABLE IF EXISTS tasks")
         onCreate(db)
     }
 
     // PUBLIC QUERY HELPERS
 
-    /** Returns all tasks ordered by label. */
     fun getAllTasks(db: SQLiteDatabase): MutableList<Task> {
         val tasks = mutableListOf<Task>()
         val cursor = db.rawQuery(
@@ -78,18 +77,18 @@ class DatabaseHelper(context: Context) :
         return tasks
     }
 
-    /** Returns the ordered steps (as Task objects) for a given workout id. */
-    fun getWorkoutTasks(db: SQLiteDatabase, workoutId: Long): MutableList<Task> {
+    /** Get tasks for a session */
+    fun getSessionTasks(db: SQLiteDatabase, sessionId: Long): MutableList<Task> {
         val tasks = mutableListOf<Task>()
         val cursor = db.rawQuery(
             """
             SELECT t.id, t.label, t.duration, t.completion_count
-            FROM workout_steps ws
-            JOIN tasks t ON ws.task_id = t.id
-            WHERE ws.workout_id = ?
-            ORDER BY ws.step_order
+            FROM session_steps ss
+            JOIN tasks t ON ss.task_id = t.id
+            WHERE ss.session_id = ?
+            ORDER BY ss.step_order
             """.trimIndent(),
-            arrayOf(workoutId.toString())
+            arrayOf(sessionId.toString())
         )
         while (cursor.moveToNext()) {
             tasks.add(
@@ -105,10 +104,9 @@ class DatabaseHelper(context: Context) :
         return tasks
     }
 
-    /** Returns all workouts as a list of Pair(id, name). */
-    fun getWorkouts(db: SQLiteDatabase): List<Pair<Long, String>> {
+    fun getSessions(db: SQLiteDatabase): List<Pair<Long, String>> {
         val result = mutableListOf<Pair<Long, String>>()
-        val cursor = db.rawQuery("SELECT id, name FROM workouts ORDER BY id", null)
+        val cursor = db.rawQuery("SELECT id, name FROM sessions ORDER BY id", null)
         while (cursor.moveToNext()) {
             result.add(Pair(cursor.getLong(0), cursor.getString(1)))
         }
@@ -129,6 +127,7 @@ class DatabaseHelper(context: Context) :
             return id
         }
         cursor.close()
+
         val values = ContentValues().apply {
             put("label", label)
             put("duration", duration)
@@ -136,35 +135,34 @@ class DatabaseHelper(context: Context) :
         return db.insert("tasks", null, values)
     }
 
-    private fun insertWorkout(db: SQLiteDatabase, name: String): Long {
+    private fun insertSession(db: SQLiteDatabase, name: String): Long {
         val values = ContentValues().apply { put("name", name) }
-        return db.insert("workouts", null, values)
+        return db.insert("sessions", null, values)
     }
 
-    private fun insertWorkoutStep(
+    private fun insertSessionStep(
         db: SQLiteDatabase,
-        workoutId: Long,
+        sessionId: Long,
         taskId: Long,
         order: Int
     ) {
         val values = ContentValues().apply {
-            put("workout_id", workoutId)
+            put("session_id", sessionId)
             put("task_id", taskId)
             put("step_order", order)
         }
-        db.insert("workout_steps", null, values)
+        db.insert("session_steps", null, values)
     }
 
-    /** Returns all steps across all workouts, in workout order. */
-    fun getAllWorkoutTasks(db: SQLiteDatabase): MutableList<Task> {
+    fun getAllSessionTasks(db: SQLiteDatabase): MutableList<Task> {
         val tasks = mutableListOf<Task>()
         val cursor = db.rawQuery(
             """
-        SELECT t.id, t.label, t.duration, t.completion_count
-        FROM workout_steps ws
-        JOIN tasks t ON ws.task_id = t.id
-        ORDER BY ws.workout_id, ws.step_order
-        """.trimIndent(),
+            SELECT t.id, t.label, t.duration, t.completion_count
+            FROM session_steps ss
+            JOIN tasks t ON ss.task_id = t.id
+            ORDER BY ss.session_id, ss.step_order
+            """.trimIndent(),
             null
         )
         while (cursor.moveToNext()) {
@@ -183,66 +181,61 @@ class DatabaseHelper(context: Context) :
 
     private fun insertInitialData(db: SQLiteDatabase) {
 
-        // ── Workout 1: Upper Body Flow ──────────────────────────
-        val w1 = insertWorkout(db, "Upper Body Flow")
+        val s1Id = insertSession(db, "Upper Body Flow")
         var n = 1
+
         fun s1(label: String, duration: Int) {
-            insertWorkoutStep(db, w1, getOrCreateTaskId(db, label, duration), n++)
+            insertSessionStep(db, s1Id, getOrCreateTaskId(db, label, duration), n++)
         }
 
-        s1("Break", 10)
+        fun addRest() {
+            s1("Rest", 60)
+        }
+
+        s1("Getting Ready", 10)
         s1("Chest Opener", 90)
-        s1("Break", 60)
+        addRest()
         s1("Dead Hang", 60)
-        s1("Break", 60)
-        repeat(2) {
+        addRest()
+
+        repeat(3) {
             s1("Pull-Up x8", 60)
-            s1("Break", 60)
+            addRest()
             s1("Push-Up x40", 60)
-            s1("Break", 60)
+            addRest()
         }
-        s1("Pull-Up x8", 60)
-        s1("Break", 60)
-        s1("Push-Up x40", 60)
-        s1("Break", 120)  // final break is 2:00
 
-        // ── Workout 2: Strength Block ───────────────────────────
-        val w2 = insertWorkout(db, "Strength Block")
-        var n2 = 1
-        fun s2(label: String, duration: Int) {
-            insertWorkoutStep(db, w2, getOrCreateTaskId(db, label, duration), n2++)
+        addRest()
+
+        repeat(3) {
+            s1("Chin-Up x8", 60)
+            addRest()
+        }
+
+        addRest()
+
+        s1("Hip Thrust x60", 90)
+        addRest()
+        s1("Hip Thrust x30", 90)
+        addRest()
+
+        s1("Wall Sit", 60)
+        addRest()
+        s1("Split Stretch", 60)
+        addRest()
+
+        repeat(2) {
+            s1("Crunches x15", 60)
+            addRest()
         }
 
         repeat(2) {
-            s2("Chin-Up x8", 60)
-            s2("Break", 60)
-        }
-        s2("Chin-Up x8", 60)
-        s2("Break", 120)  // 2:00 after last set
-        s2("Hip Thrust x60", 60)
-        s2("Break", 60)
-        s2("Hip Thrust x60", 60)
-        s2("Break", 60)
-
-        // ── Workout 3: Mobility & Core ──────────────────────────
-        val w3 = insertWorkout(db, "Mobility & Core")
-        var n3 = 1
-        fun s3(label: String, duration: Int) {
-            insertWorkoutStep(db, w3, getOrCreateTaskId(db, label, duration), n3++)
+            s1("Flutter Kicks", 30)
+            addRest()
         }
 
-        s3("Wall Sit", 60)
-        s3("Break", 60)
-        s3("Split Stretch", 60)
-        s3("Break", 60)
-        s3("Crunches x15", 60)
-        s3("Break", 60)
-        s3("Crunches x15", 60)
-        s3("Break", 60)
-        s3("Flutter Kicks", 30)
-        s3("Break", 60)
-        s3("Plank", 60)
-        s3("Break", 60)
-        s3("Dead Hang", 60)
+        s1("Plank", 60)
+        addRest()
+        s1("Dead Hang", 60)
     }
 }

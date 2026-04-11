@@ -44,9 +44,9 @@ class MainActivity : CsActivity() {
             .findViewById(R.id.start_group_icon)
 
         val db = dbHelper.readableDatabase
-        val workouts = dbHelper.getWorkouts(db)
-        tasks = if (workouts.isNotEmpty()) {
-            dbHelper.getAllWorkoutTasks(db)
+        val sessions = dbHelper.getSessions(db)
+        tasks = if (sessions.isNotEmpty()) {
+            dbHelper.getAllSessionTasks(db)
         } else {
             dbHelper.getAllTasks(db)
         }
@@ -184,7 +184,7 @@ class MainActivity : CsActivity() {
             val s = totalSeconds % 60
             String.format("%02d:%02d", m, s)
         }
-        groupLabel.text = "[-] Workout :: $taskCount Tasks :: $timeStr"
+        groupLabel.text = "[-] Workout :: $timeStr"
     }
 
     private fun updateTimerDisplay(ms: Long) {

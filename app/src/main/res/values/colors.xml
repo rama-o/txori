@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="foreground_color">#CCCCCC</color>
+    <color name="foreground">#CCCCCC</color>
 
     <!-- UI -->
     <color name="bg_primary">#141417</color>
@@ -11,7 +11,8 @@
     <color name="accent_secondary">#cdc58b</color>
     <color name="accent_tertiary">#DCD07C</color>
     <color name="disabled">#888</color>
-    <color name="progress_color">#253F71</color>
+    <color name="progress">#253F71</color>
+    <color name="task_frequency">#71ACC7</color>
 
     <!-- INPUTS -->
     <color name="button_primary_color">#7D58A6</color>

@@ -138,7 +138,7 @@ class TaskAdapter(
             .create()
 
         dialogView.findViewById<WdButton>(R.id.delete_button).setOnClickListener {
-            db.delete("workout_steps", "task_id = ?", arrayOf(task.id.toString()))
+            db.delete("session_steps", "task_id = ?", arrayOf(task.id.toString()))
             db.delete("tasks", "id = ?", arrayOf(task.id.toString()))
             tasks.removeAt(position)
             notifyDataSetChanged()

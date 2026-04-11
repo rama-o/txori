@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16sp"
         android:textSize="32sp"
-        android:textColor="@color/foreground_color"
+        android:textColor="@color/foreground"
         android:text="Edit task"
         android:gravity="center" />
 
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8sp"
         android:textSize="16sp"
-        android:textColor="@color/foreground_color"
+        android:textColor="@color/foreground"
         android:text="Label" />
 
     <LinearLayout
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8sp"
         android:textSize="16sp"
-        android:textColor="@color/foreground_color"
+        android:textColor="@color/foreground"
         android:text="Duration (seconds)" />
 
     <LinearLayout
