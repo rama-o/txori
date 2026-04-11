@@ -3,6 +3,7 @@ package com.rama.adiskide.activities
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import com.rama.adiskide.CsActivity
@@ -17,11 +18,11 @@ class MainActivity : CsActivity() {
     private lateinit var adapter: TaskAdapter
     private val dbHelper by lazy { DatabaseHelper(this) }
 
-    // Top panel views
     private lateinit var taskNameView: TextView
     private lateinit var timerView: TextView
+    private lateinit var groupLabel: TextView
+    private lateinit var startGroupIcon: ImageView
 
-    // Task sequence state
     private var tasks: MutableList<Task> = mutableListOf()
     private var currentIndex: Int = -1
     private var currentTimer: CountDownTimer? = null
@@ -38,6 +39,9 @@ class MainActivity : CsActivity() {
         listView = findViewById(R.id.task_list)
         taskNameView = findViewById(R.id.current_task_name)
         timerView = findViewById(R.id.current_task_timer)
+        groupLabel = findViewById(R.id.group_label)
+        startGroupIcon = findViewById<View>(R.id.start_group)
+            .findViewById(R.id.start_group_icon)
 
         val db = dbHelper.readableDatabase
         val workouts = dbHelper.getWorkouts(db)
@@ -50,9 +54,15 @@ class MainActivity : CsActivity() {
         adapter = TaskAdapter(this, tasks, db)
         listView.adapter = adapter
 
-        // start_group: kick off from the first task
+        updateGroupLabel(totalRemainingSeconds())
+
+        // start_group: play / pause toggle
         findViewById<View>(R.id.start_group).setOnClickListener {
-            startFromIndex(0)
+            when {
+                !isRunning && currentIndex < 0 -> startFromIndex(0)
+                !isRunning && currentIndex >= 0 -> resumeTimer()
+                else -> pauseTimer()
+            }
         }
 
         // Repeat: restart the current task
@@ -94,6 +104,8 @@ class MainActivity : CsActivity() {
             taskNameView.text = "Done!"
             timerView.text = "00:00"
             adapter.setActiveIndex(-1)
+            updateGroupLabel(0)
+            setPlayPauseIcon(playing = false)
         }
     }
 
@@ -106,8 +118,19 @@ class MainActivity : CsActivity() {
         launchTimer(remainingMs)
     }
 
+    private fun pauseTimer() {
+        currentTimer?.cancel()
+        isRunning = false
+        setPlayPauseIcon(playing = false)
+    }
+
+    private fun resumeTimer() {
+        launchTimer(remainingMs)
+    }
+
     private fun launchTimer(durationMs: Long) {
         isRunning = true
+        setPlayPauseIcon(playing = true)
         updateTimerDisplay(durationMs)
 
         currentTimer = object : CountDownTimer(durationMs, 100) {
@@ -115,7 +138,11 @@ class MainActivity : CsActivity() {
                 remainingMs = millisUntilFinished
                 updateTimerDisplay(millisUntilFinished)
 
-                // Drive progress bar on the active list row
+                // Group label: remaining time from this tick onward
+                val elapsedInTask = (tasks[currentIndex].duration * 1000L) - millisUntilFinished
+                val remainingTotalMs = remainingTotalMs(currentIndex, elapsedInTask)
+                updateGroupLabel((remainingTotalMs / 1000).toInt())
+
                 val total = tasks.getOrNull(currentIndex)?.duration?.times(1000L) ?: 1L
                 val progress = 1f - (millisUntilFinished.toFloat() / total.toFloat())
                 adapter.setProgress(currentIndex, progress.coerceIn(0f, 1f))
@@ -129,9 +156,46 @@ class MainActivity : CsActivity() {
         }.start()
     }
 
+    // Time helpers
+
+    /** Total duration of all tasks in seconds (initial state). */
+    private fun totalRemainingSeconds(): Int =
+        tasks.sumOf { it.duration }
+
+    /**
+     * Remaining time across the whole group:
+     * elapsed portion of the current task + full duration of all future tasks.
+     */
+    private fun remainingTotalMs(activeIdx: Int, elapsedInCurrentMs: Long): Long {
+        val currentRemaining = (tasks[activeIdx].duration * 1000L) - elapsedInCurrentMs
+        val futureMs = tasks.drop(activeIdx + 1).sumOf { it.duration * 1000L }
+        return currentRemaining + futureMs
+    }
+
+    private fun updateGroupLabel(totalSeconds: Int) {
+        val taskCount = tasks.size
+        val timeStr = if (totalSeconds >= 3600) {
+            val h = totalSeconds / 3600
+            val m = (totalSeconds % 3600) / 60
+            val s = totalSeconds % 60
+            String.format("%02d:%02d:%02d", h, m, s)
+        } else {
+            val m = totalSeconds / 60
+            val s = totalSeconds % 60
+            String.format("%02d:%02d", m, s)
+        }
+        groupLabel.text = "[-] Workout :: $taskCount Tasks :: $timeStr"
+    }
+
     private fun updateTimerDisplay(ms: Long) {
         val totalSeconds = (ms / 1000).coerceAtLeast(0)
         timerView.text = String.format("%02d:%02d", totalSeconds / 60, totalSeconds % 60)
+    }
+
+    private fun setPlayPauseIcon(playing: Boolean) {
+        startGroupIcon.setImageResource(
+            if (playing) R.drawable.icon_pause else R.drawable.icon_play
+        )
     }
 
     override fun onDestroy() {

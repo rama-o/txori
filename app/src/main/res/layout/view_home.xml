@@ -126,6 +126,7 @@
             android:padding="12sp">
 
             <ImageView
+                android:id="@+id/start_group_icon"
                 android:layout_width="18sp"
                 android:layout_height="18sp"
                 android:src="@drawable/icon_play"
