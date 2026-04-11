@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg_color">#141417</color>
     <color name="foreground_color">#CCCCCC</color>
 
     <!-- UI -->
+    <color name="bg_primary">#141417</color>
     <color name="bg_secondary">#1f1f29</color>
     <color name="bg_tertiary">#322f1b</color>
     <color name="bg_4">#2E324D</color>
@@ -13,7 +13,7 @@
     <color name="disabled">#888</color>
 
     <!-- INPUTS -->
-    <color name="button_primary_color">#459984</color>
+    <color name="button_primary_color">#3D8C78</color>
     <color name="button_secondary_color">#6194AF</color>
     <color name="danger">#DC6364</color>
 

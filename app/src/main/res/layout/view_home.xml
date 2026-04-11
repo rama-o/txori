@@ -8,29 +8,6 @@
     android:textColor="?attr/foregroundColor">
 
     <LinearLayout
-        android:id="@+id/top_bar"
-        android:orientation="horizontal"
-        android:gravity="end|center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <FrameLayout
-            android:id="@+id/toggle_visibility"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="12sp">
-
-            <ImageView
-                android:id="@+id/toggle_visibility_img"
-                android:layout_width="24sp"
-                android:layout_height="24sp"
-                android:src="@drawable/icon_cog"
-                android:textSize="16sp"
-                android:contentDescription="Toggle Visibility" />
-        </FrameLayout>
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="32sp"
@@ -50,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="56sp"
+            android:layout_marginBottom="8sp"
             android:layout_gravity="center"
             android:textColor="@color/foreground_color"
             android:text="02:00" />
@@ -72,12 +50,12 @@
                 <ImageView
                     android:layout_width="24sp"
                     android:layout_height="24sp"
-                    android:src="@drawable/icon_octagon_check_solid"
+                    android:src="@drawable/icon_refresh"
                     android:textSize="16sp" />
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/start_task"
+                android:id="@+id/increase_duration"
                 android:background="@color/bg_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,7 +65,7 @@
                 <ImageView
                     android:layout_width="24sp"
                     android:layout_height="24sp"
-                    android:src="@drawable/icon_octagon_check_solid"
+                    android:src="@drawable/icon_arrow_up"
                     android:textSize="16sp" />
             </FrameLayout>
 
@@ -111,27 +89,12 @@
                 android:background="@color/bg_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16sp"
                 android:padding="12sp">
 
                 <ImageView
                     android:layout_width="24sp"
                     android:layout_height="24sp"
-                    android:src="@drawable/icon_octagon_check_solid"
-                    android:textSize="16sp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/increase_duration"
-                android:background="@color/bg_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="12sp">
-
-                <ImageView
-                    android:layout_width="24sp"
-                    android:layout_height="24sp"
-                    android:src="@drawable/icon_octagon_check_solid"
+                    android:src="@drawable/icon_next"
                     android:textSize="16sp" />
             </FrameLayout>
         </LinearLayout>
@@ -144,11 +107,12 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/group_label"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="[-] Workout :: 40 Tasks :: 44m"
-            android:textSize="24sp"
+            android:textSize="18sp"
             android:paddingTop="12sp"
             android:paddingBottom="12sp"
             android:textColor="@color/foreground_color" />
@@ -160,9 +124,9 @@
             android:padding="12sp">
 
             <ImageView
-                android:layout_width="24sp"
-                android:layout_height="24sp"
-                android:src="@drawable/icon_octagon_check_solid"
+                android:layout_width="18sp"
+                android:layout_height="18sp"
+                android:src="@drawable/icon_play"
                 android:textSize="16sp" />
         </FrameLayout>
 
@@ -177,11 +141,79 @@
         android:layout_marginBottom="8sp"
         android:layout_weight="1" />
 
-    <com.rama.adiskide.widgets.WdButton
-        android:id="@+id/add_task_btn"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/button_secondary_color"
-        android:text="@string/add_task" />
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/home_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/button_primary_color"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:padding="12sp">
+
+            <ImageView
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_home"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/stopwatch_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/button_primary_color"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:padding="12sp">
+
+            <ImageView
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_clock"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/settings_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/button_primary_color"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:padding="12sp">
+
+            <ImageView
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_cog"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/about_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/button_primary_color"
+            android:layout_weight="1"
+            android:padding="12sp">
+
+            <ImageView
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_user"
+                android:textSize="16sp" />
+        </FrameLayout>
+    </LinearLayout>
+
 
 </LinearLayout>
