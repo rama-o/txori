@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 
 class DatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, "tasks.db", null, 14) {
+    SQLiteOpenHelper(context, "tasks.db", null, 15) {
 
     override fun onCreate(db: SQLiteDatabase) {
 
@@ -190,9 +190,10 @@ class DatabaseHelper(context: Context) :
             insertWorkoutStep(db, w1, getOrCreateTaskId(db, label, duration), n++)
         }
 
+        s1("Break", 10)
         s1("Chest Opener", 90)
         s1("Break", 60)
-        s1("Dead Hang", 30)
+        s1("Dead Hang", 60)
         s1("Break", 60)
         repeat(2) {
             s1("Pull-Up x8", 60)
@@ -233,6 +234,8 @@ class DatabaseHelper(context: Context) :
         s3("Wall Sit", 60)
         s3("Break", 60)
         s3("Split Stretch", 60)
+        s3("Break", 60)
+        s3("Crunches x15", 60)
         s3("Break", 60)
         s3("Crunches x15", 60)
         s3("Break", 60)
