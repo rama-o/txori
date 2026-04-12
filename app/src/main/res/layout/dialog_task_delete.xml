@@ -17,7 +17,7 @@
         android:gravity="center"
         android:textStyle="bold" />
 
-    <com.rama.adiskide.widgets.WdButton
+    <com.rama.txori.widgets.WdButton
         android:id="@+id/delete_button"
         android:layout_width="match_parent"
         android:layout_marginBottom="8sp"
@@ -25,7 +25,7 @@
         android:background="@color/danger"
         android:text="Delete task" />
 
-    <com.rama.adiskide.widgets.WdButton
+    <com.rama.txori.widgets.WdButton
         android:id="@+id/cancel_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

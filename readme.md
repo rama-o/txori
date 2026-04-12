@@ -1,6 +1,6 @@
 ![Preview](https://raw.githubusercontent.com/jmiguelrivas/mako/refs/heads/master/metadata/mako_preview.svg)
 
-# Mako
+# Txori
 
 **Mako** is a **minimal, privacy-first Android launcher** designed for focus, speed, and
 simplicity.
@@ -43,7 +43,8 @@ No network access is required.
 ## Usage
 
 * Long-press in an empty area of the **app list** to open **Settings**.
-* Watch the **[Mako Demo / Walkthrough](https://www.youtube.com/watch?v=cfble2DRqyM)** for a quick overview.
+* Watch the **[Mako Demo / Walkthrough](https://www.youtube.com/watch?v=cfble2DRqyM)** for a quick
+  overview.
 
 ---
 

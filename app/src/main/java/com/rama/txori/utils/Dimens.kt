@@ -1,4 +1,4 @@
-package com.rama.adiskide.utils
+package com.rama.txori.utils
 
 import android.content.Context
 import kotlin.math.roundToInt

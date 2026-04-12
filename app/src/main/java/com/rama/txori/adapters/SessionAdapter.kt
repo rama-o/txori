@@ -1,4 +1,4 @@
-package com.rama.adiskide.adapters
+package com.rama.txori.adapters
 
 import android.app.AlertDialog
 import android.content.ContentValues
@@ -8,11 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.rama.adiskide.DatabaseHelper
-import com.rama.adiskide.R
-import com.rama.adiskide.SessionItem
-import com.rama.adiskide.Task
-import com.rama.adiskide.widgets.WdButton
+import com.rama.txori.DatabaseHelper
+import com.rama.txori.R
+import com.rama.txori.SessionItem
+import com.rama.txori.Task
+import com.rama.txori.widgets.WdButton
 
 class SessionAdapter(
     private val context: Context,

@@ -6,11 +6,11 @@ plugins {
 def currentYear = java.time.LocalDate.now().getYear()
 
 android {
-    namespace = "com.rama.adiskide"
+    namespace = "com.rama.txori"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.rama.adiskide"
+        applicationId = "com.rama.txori"
         minSdk = 21
         targetSdk = 36
         versionCode = 1
@@ -24,7 +24,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "adiskide_${versionName}.apk"
+            outputFileName = "txori_${versionName}.apk"
         }
     }
 

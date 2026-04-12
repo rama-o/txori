@@ -1,4 +1,4 @@
-package com.rama.adiskide
+package com.rama.txori
 
 data class Task(
     val id: Long = 0,

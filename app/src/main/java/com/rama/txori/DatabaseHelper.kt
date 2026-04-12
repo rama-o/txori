@@ -1,4 +1,4 @@
-package com.rama.adiskide
+package com.rama.txori
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

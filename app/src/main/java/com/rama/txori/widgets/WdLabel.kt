@@ -1,4 +1,4 @@
-package com.rama.adiskide.widgets
+package com.rama.txori.widgets
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.rama.adiskide.R
+import com.rama.txori.R
 
 class WdLabel @JvmOverloads constructor(
     context: Context,

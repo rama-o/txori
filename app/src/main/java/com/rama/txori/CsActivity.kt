@@ -1,4 +1,4 @@
-package com.rama.adiskide
+package com.rama.txori
 
 import android.app.Activity
 import android.os.Build
@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
-import com.rama.adiskide.utils.dp
+import com.rama.txori.utils.dp
 
 abstract class CsActivity : Activity() {
 

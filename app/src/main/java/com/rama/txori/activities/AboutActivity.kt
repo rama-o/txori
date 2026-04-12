@@ -1,9 +1,9 @@
-package com.rama.adiskide.activities
+package com.rama.txori.activities
 
 import android.os.Bundle
 import android.view.View
-import com.rama.adiskide.CsActivity
-import com.rama.adiskide.R
+import com.rama.txori.CsActivity
+import com.rama.txori.R
 
 class AboutActivity : CsActivity() {
 

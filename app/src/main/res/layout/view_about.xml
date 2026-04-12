@@ -50,49 +50,49 @@
                 android:text="@string/app_header"
                 android:textStyle="bold" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_user"
                 android:text="@string/app_creator" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_seedlings"
                 android:text="@string/app_name" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_github"
                 android:text="@string/main_project_url" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_octagon_check_solid"
                 android:text="@string/icon_ads_desc" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_octagon_check_solid"
                 android:text="@string/icon_block_desc" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_octagon_check_solid"
                 android:text="@string/icon_location_desc" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_octagon_check_solid"
                 android:text="@string/icon_offline_desc" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_octagon_check_solid"
@@ -107,25 +107,25 @@
                 android:text="@string/icons_header"
                 android:textStyle="bold" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_user"
                 android:text="@string/hackernoon_creator" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_seedlings"
                 android:text="@string/hackernoon_product" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_github"
                 android:text="@string/hackernoon_url" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_octagon_check_solid"
@@ -140,25 +140,25 @@
                 android:text="@string/fonts_header"
                 android:textStyle="bold" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_user"
                 android:text="@string/jersey_creator" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_seedlings"
                 android:text="@string/font_jersey_label" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_github"
                 android:text="@string/jersey_url" />
 
-            <com.rama.adiskide.widgets.WdLabel
+            <com.rama.txori.widgets.WdLabel
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/icon_octagon_check_solid"
@@ -172,7 +172,7 @@
             android:background="@color/disabled"
             android:layout_marginVertical="16sp" />
 
-        <com.rama.adiskide.widgets.WdButton
+        <com.rama.txori.widgets.WdButton
             android:id="@+id/close_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

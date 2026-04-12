@@ -1,4 +1,4 @@
-package com.rama.adiskide.activities
+package com.rama.txori.activities
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -7,12 +7,12 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
-import com.rama.adiskide.CsActivity
-import com.rama.adiskide.DatabaseHelper
-import com.rama.adiskide.R
-import com.rama.adiskide.SessionItem
-import com.rama.adiskide.adapters.SessionAdapter
-import com.rama.adiskide.widgets.WdButton
+import com.rama.txori.CsActivity
+import com.rama.txori.DatabaseHelper
+import com.rama.txori.R
+import com.rama.txori.SessionItem
+import com.rama.txori.adapters.SessionAdapter
+import com.rama.txori.widgets.WdButton
 
 class MainActivity : CsActivity() {
 

@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Adiskide"
+rootProject.name = "Txori"
 include(":app")
  
