@@ -114,6 +114,43 @@ class DatabaseHelper(context: Context) :
         return result
     }
 
+    // PUBLIC WRITE HELPERS
+
+    fun createSession(db: SQLiteDatabase, name: String): Long {
+        val values = ContentValues().apply { put("name", name) }
+        return db.insert("sessions", null, values)
+    }
+
+    fun deleteSession(db: SQLiteDatabase, sessionId: Long) {
+        db.delete("session_steps", "session_id = ?", arrayOf(sessionId.toString()))
+        db.delete("sessions", "id = ?", arrayOf(sessionId.toString()))
+    }
+
+    fun addTaskToSession(db: SQLiteDatabase, sessionId: Long, label: String, duration: Int): Long {
+        val taskId = getOrCreateTaskId(db, label, duration)
+        val cursor = db.rawQuery(
+            "SELECT COALESCE(MAX(step_order), 0) FROM session_steps WHERE session_id = ?",
+            arrayOf(sessionId.toString())
+        )
+        val maxOrder = if (cursor.moveToFirst()) cursor.getInt(0) else 0
+        cursor.close()
+        val values = ContentValues().apply {
+            put("session_id", sessionId)
+            put("task_id", taskId)
+            put("step_order", maxOrder + 1)
+        }
+        db.insert("session_steps", null, values)
+        return taskId
+    }
+
+    fun removeTaskFromSession(db: SQLiteDatabase, sessionId: Long, taskId: Long) {
+        db.delete(
+            "session_steps",
+            "session_id = ? AND task_id = ?",
+            arrayOf(sessionId.toString(), taskId.toString())
+        )
+    }
+
     // PRIVATE HELPERS
 
     private fun getOrCreateTaskId(db: SQLiteDatabase, label: String, duration: Int): Long {

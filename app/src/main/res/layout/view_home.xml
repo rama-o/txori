@@ -102,7 +102,7 @@
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
-    
+
     <ListView
         android:id="@+id/task_list"
         android:layout_width="match_parent"
@@ -113,7 +113,7 @@
         android:layout_weight="1" />
 
     <com.rama.adiskide.widgets.WdButton
-        android:id="@+id/cancel_button"
+        android:id="@+id/add_group_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8sp"
