@@ -11,7 +11,6 @@ import com.rama.adiskide.CsActivity
 import com.rama.adiskide.DatabaseHelper
 import com.rama.adiskide.R
 import com.rama.adiskide.SessionItem
-import com.rama.adiskide.Task
 import com.rama.adiskide.adapters.SessionAdapter
 import com.rama.adiskide.widgets.WdButton
 
@@ -222,7 +221,7 @@ class MainActivity : CsActivity() {
     //  Add Group dialog 
 
     private fun showAddGroupDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_task_rename, null)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_session_add, null)
         val dialog = AlertDialog.Builder(this).setView(dialogView).create()
 
         val input = dialogView.findViewById<EditText>(R.id.edit_text)

@@ -81,7 +81,7 @@ class SessionAdapter(
         val timeStr = formatGroupTime(totalSec)
 
         view.findViewById<TextView>(R.id.group_label).text =
-            "${header.name} :: ${header.tasks.size} Tasks :: $timeStr"
+            "${header.name} :: $timeStr"
 
         view.findViewById<View>(R.id.start_group).setOnClickListener {
             onStartGroup(header.sessionId, position + 1)
@@ -205,8 +205,9 @@ class SessionAdapter(
 
         val dialog = AlertDialog.Builder(context).setView(dialogView).create()
 
-        dialogView.findViewById<TextView>(R.id.add_button)
-            .let { it as? WdButton }?.setText("Add Task")
+        dialogView.findViewById<TextView>(R.id.modal_title).setText("Add new task")
+
+        dialogView.findViewById<WdButton>(R.id.add_button).setText("Create Task")
 
         val labelInput = dialogView.findViewById<EditText>(R.id.label)
         val durationInput = dialogView.findViewById<EditText>(R.id.duration)

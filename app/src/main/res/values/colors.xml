@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="foreground">#CCCCCC</color>
-
-    <!-- UI -->
     <color name="bg_primary">#141417</color>
     <color name="bg_secondary">#1f1f29</color>
     <color name="bg_tertiary">#322f1b</color>
@@ -13,10 +11,8 @@
     <color name="disabled">#888</color>
     <color name="progress">#253F71</color>
     <color name="task_frequency">#71ACC7</color>
-
-    <!-- INPUTS -->
     <color name="button_primary_color">#7D58A6</color>
-    <color name="button_secondary_color">#6194AF</color>
+    <color name="button_secondary_color">#4CAB9E</color>
     <color name="danger">#DC6364</color>
-
+    <color name="input">#20203C</color>
 </resources>

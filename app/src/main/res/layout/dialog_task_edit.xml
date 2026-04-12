@@ -8,6 +8,7 @@
     android:focusableInTouchMode="true">
 
     <TextView
+        android:id="@+id/modal_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16sp"
@@ -24,23 +25,16 @@
         android:textColor="@color/foreground"
         android:text="Label" />
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="16sp"
         android:padding="16sp"
-        android:orientation="vertical"
-        android:layout_marginBottom="16sp"
-        android:background="@color/bg_secondary"
-        android:gravity="center_vertical">
-
-        <EditText
-            android:id="@+id/label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:maxLines="1"
-            android:singleLine="true" />
-    </LinearLayout>
+        android:layout_marginBottom="8sp"
+        android:background="@color/input" />
 
     <TextView
         android:layout_width="match_parent"
@@ -50,23 +44,16 @@
         android:textColor="@color/foreground"
         android:text="Duration (seconds)" />
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/duration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="16sp"
         android:padding="16sp"
-        android:orientation="vertical"
-        android:layout_marginBottom="24sp"
-        android:background="@color/bg_secondary"
-        android:gravity="center_vertical">
-
-        <EditText
-            android:id="@+id/duration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLines="1"
-            android:singleLine="true" />
-    </LinearLayout>
+        android:layout_marginBottom="8sp"
+        android:background="@color/input" />
 
     <com.rama.adiskide.widgets.WdButton
         android:id="@+id/delete_button"
