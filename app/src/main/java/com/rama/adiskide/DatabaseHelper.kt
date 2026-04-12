@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 
 class DatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, "tasks.db", null, 18) {
+    SQLiteOpenHelper(context, "tasks.db", null, 21) {
 
     override fun onCreate(db: SQLiteDatabase) {
 
@@ -219,13 +219,16 @@ class DatabaseHelper(context: Context) :
     private fun insertInitialData(db: SQLiteDatabase) {
 
         var n = 1
-        val s0Id = insertSession(db, "Morining Routine")
+        val s0Id = insertSession(db, "Morning Reset")
         fun s0(label: String, duration: Int) {
             insertSessionStep(db, s0Id, getOrCreateTaskId(db, label, duration), n++)
         }
 
-        s0("Organize Room", 60 * 5)
         s0("Drink Water", 60 * 5)
+        s0("Brush Teeth", 60 * 5)
+        s0("Shower", 60 * 10)
+        s0("Tidy Room", 60 * 5)
+        s0("Wash Dishes", 60 * 5)
 
         val s1Id = insertSession(db, "Workout")
         fun s1(label: String, duration: Int) {
@@ -236,19 +239,25 @@ class DatabaseHelper(context: Context) :
             s1("Rest", 60)
         }
 
-        s1("Getting Ready", 10)
+        s1("Getting Ready", 15)
         s1("Chest Opener", 90)
         addRest()
-        s1("Dead Hang", 60)
+        s1("Dead Hang", 40)
         addRest()
 
-        repeat(3) {
-            s1("Pull-Up x8", 60)
-            addRest()
-            s1("Push-Up x40", 60)
-            addRest()
-        }
+        s1("Pull-Up x8", 60)
+        addRest()
+        s1("Push-Up x40", 60)
+        addRest()
 
+        s1("Pull-Up x8", 60)
+        addRest()
+        s1("Push-Up x30", 60)
+        addRest()
+
+        s1("Pull-Up x8", 60)
+        addRest()
+        s1("Push-Up x30", 60)
         addRest()
 
         repeat(3) {
@@ -256,9 +265,7 @@ class DatabaseHelper(context: Context) :
             addRest()
         }
 
-        addRest()
-
-        s1("Hip Thrust x60", 90)
+        s1("Hip Thrust x30", 90)
         addRest()
         s1("Hip Thrust x30", 90)
         addRest()
@@ -269,7 +276,7 @@ class DatabaseHelper(context: Context) :
         addRest()
 
         repeat(2) {
-            s1("Crunches x15", 60)
+            s1("Crunches x12", 60)
             addRest()
         }
 

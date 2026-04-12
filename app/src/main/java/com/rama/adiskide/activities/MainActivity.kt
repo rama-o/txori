@@ -128,7 +128,7 @@ class MainActivity : CsActivity() {
             currentItemIndex = -1
             adapter.setActiveItemIndex(-1)
             adapter.setGroupPlayingState(sessionId, false)
-            taskNameView.text = "Olá!"
+            taskNameView.text = "Kaixo!"
             timerView.text = "00:00"
         }
     }

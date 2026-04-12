@@ -13,20 +13,30 @@
         android:layout_marginBottom="16sp"
         android:textSize="32sp"
         android:textColor="@color/foreground"
-        android:text="Add new group"
+        android:text="Edit group"
         android:gravity="center"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/edit_text"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:textSize="16sp"
-        android:padding="16sp"
+        android:layout_height="match_parent"
         android:layout_marginBottom="8sp"
-        android:background="@color/input" />
+        android:padding="16sp"
+        android:orientation="vertical"
+        android:background="@color/bg_secondary"
+        android:focusableInTouchMode="true">
+
+        <EditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:padding="16sp"
+            android:layout_marginBottom="8sp"
+            android:background="@color/input" />
+    </LinearLayout>
 
     <com.rama.adiskide.widgets.WdButton
         android:id="@+id/yes_button"
@@ -42,7 +52,7 @@
         android:layout_marginBottom="8sp"
         android:layout_height="wrap_content"
         android:background="@color/danger"
-        android:text="@string/delete_group" />
+        android:text="@string/reset" />
 
     <com.rama.adiskide.widgets.WdButton
         android:id="@+id/no_button"
