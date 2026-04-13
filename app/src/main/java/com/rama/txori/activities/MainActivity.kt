@@ -16,7 +16,8 @@ import com.rama.txori.managers.FontManager
 import com.rama.txori.widgets.WdButton
 
 class MainActivity : CsActivity() {
-
+    private var mediaPlayer: android.media.MediaPlayer? = null
+    private var beepArmed: Boolean = false
     private lateinit var listView: ListView
     private lateinit var adapter: SessionAdapter
     private val dbHelper by lazy { DatabaseHelper(this) }
@@ -38,6 +39,7 @@ class MainActivity : CsActivity() {
     private var isRunning: Boolean = false
     private var globalRemainingMs: Long = 0
     private var globalTimer: CountDownTimer? = null
+    private var lastBeepSecond: Long = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -235,8 +237,10 @@ class MainActivity : CsActivity() {
         isRunning = false
     }
 
+    // Replace launchTimer entirely
     private fun launchTimer(durationMs: Long) {
         isRunning = true
+        beepArmed = false
         updateTimerDisplay(durationMs)
 
         currentTimer = object : CountDownTimer(durationMs, 100) {
@@ -248,6 +252,18 @@ class MainActivity : CsActivity() {
                 val total = (row?.task?.duration ?: 1) * 1000L
                 val progress = 1f - (millisUntilFinished.toFloat() / total.toFloat())
                 adapter.setProgress(currentItemIndex, progress.coerceIn(0f, 1f))
+
+                val secondsLeft = millisUntilFinished / 1000
+
+                if (secondsLeft in 1..4 && secondsLeft != lastBeepSecond) {
+                    lastBeepSecond = secondsLeft
+                    playSound(R.raw.beeps_01)
+                }
+
+                if (secondsLeft == 0L && secondsLeft != lastBeepSecond) {
+                    lastBeepSecond = secondsLeft
+                    playSound(R.raw.beeps_15)
+                }
             }
 
             override fun onFinish() {
@@ -263,12 +279,24 @@ class MainActivity : CsActivity() {
         globalTimer = object : CountDownTimer(durationMs, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 globalRemainingMs = millisUntilFinished
+                adapter.updateActiveHeaderTimer(activeSessionId, millisUntilFinished)
             }
 
             override fun onFinish() {
                 globalRemainingMs = 0
+                adapter.updateActiveHeaderTimer(activeSessionId, 0)
             }
         }.start()
+    }
+
+    private fun playSound(rawResId: Int) {
+        try {
+            mediaPlayer?.release()
+            mediaPlayer = android.media.MediaPlayer.create(this, rawResId)
+            mediaPlayer?.setOnCompletionListener { it.release() }
+            mediaPlayer?.start()
+        } catch (_: Exception) {
+        }
     }
 
     private fun updateTimerDisplay(ms: Long) {
@@ -305,10 +333,12 @@ class MainActivity : CsActivity() {
         dialogView.findViewById<WdButton>(R.id.no_button).setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
-
+    
     override fun onDestroy() {
         currentTimer?.cancel()
         globalTimer?.cancel()
+        mediaPlayer?.release()
+        mediaPlayer = null
         dbHelper.close()
         super.onDestroy()
     }

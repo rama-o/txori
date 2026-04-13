@@ -96,6 +96,28 @@ class SessionAdapter(
         }
     }
 
+    fun updateActiveHeaderTimer(sessionId: Long, remainingMs: Long) {
+        val listView = (context as? android.app.Activity)
+            ?.findViewById<ListView>(R.id.task_list) ?: return
+        val firstVisible = listView.firstVisiblePosition
+
+        for (i in items.indices) {
+            val item = items[i]
+            if (item is SessionItem.Header && item.sessionId == sessionId) {
+                val local = i - firstVisible
+                if (local >= 0 && local < listView.childCount) {
+                    val headerView = listView.getChildAt(local) ?: break
+                    val label = headerView.findViewById<TextView>(R.id.group_label) ?: break
+                    val isCollapsed = collapsedSessions.contains(item.sessionId)
+                    val indicator = if (isCollapsed) "[-]" else "[+]"
+                    val timeStr = formatGroupTime((remainingMs / 1000).toInt())
+                    label.text = "$indicator ${item.name} :: $timeStr"
+                }
+                break
+            }
+        }
+    }
+
     private fun getHeaderView(
         header: SessionItem.Header,
         position: Int,
