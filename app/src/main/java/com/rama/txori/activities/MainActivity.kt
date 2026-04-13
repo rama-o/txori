@@ -24,7 +24,7 @@ class MainActivity : CsActivity() {
 
     private val toneGen by lazy {
         android.media.ToneGenerator(
-            android.media.AudioManager.STREAM_ALARM,
+            android.media.AudioManager.STREAM_MUSIC,
             100
         )
     }
@@ -261,18 +261,17 @@ class MainActivity : CsActivity() {
 
                 val secondsLeft = millisUntilFinished / 1000
 
-                if (secondsLeft in 1..4 && secondsLeft != lastBeepSecond) {
+                if (secondsLeft in 0..5 && secondsLeft != lastBeepSecond) {
                     lastBeepSecond = secondsLeft
-                    toneGen.startTone(android.media.ToneGenerator.TONE_PROP_BEEP, 150)
-                }
-
-                if (secondsLeft == 0L && secondsLeft != lastBeepSecond) {
-                    lastBeepSecond = secondsLeft
-                    toneGen.startTone(android.media.ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150)
+                    toneGen.startTone(
+                        android.media.ToneGenerator.TONE_PROP_BEEP,
+                        150
+                    )
                 }
             }
 
             override fun onFinish() {
+                toneGen.startTone(android.media.ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 150)
                 isRunning = false
                 adapter.setProgress(currentItemIndex, 1f)
                 advanceToNext()
