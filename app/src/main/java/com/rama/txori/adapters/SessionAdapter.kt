@@ -33,6 +33,13 @@ class SessionAdapter(
     private var activeItemIndex: Int = -1
     private var activeProgress: Float = 0f
     private val collapsedSessions: MutableSet<Long> = mutableSetOf()
+    private var isEditMode: Boolean = false
+    private val playingSessions: MutableSet<Long> = mutableSetOf()
+
+    fun setEditMode(editing: Boolean) {
+        isEditMode = editing
+        notifyDataSetChanged()
+    }
 
     fun setActiveItemIndex(index: Int) {
         activeItemIndex = index
@@ -144,21 +151,36 @@ class SessionAdapter(
             notifyDataSetChanged()
         }
 
-        view.findViewById<TextView>(R.id.group_label).setOnLongClickListener {
+        view.findViewById<View>(R.id.edit_session_button).visibility =
+            if (!isEditMode) View.GONE else View.VISIBLE
+        view.findViewById<View>(R.id.edit_session_button).setOnClickListener {
             showEditSessionDialog(header, position)
             true
+        }
+
+        // Hide add_task button in edit mode
+        view.findViewById<View>(R.id.add_task).visibility =
+            if (!isEditMode) View.GONE else View.VISIBLE
+        view.findViewById<View>(R.id.add_task).setOnClickListener {
+            showAddTaskDialog(header, position)
         }
 
         view.findViewById<View>(R.id.start_group).setOnClickListener {
             onStartGroup(header.sessionId, position + 1)
         }
 
+        // In edit mode force play icon regardless of playing state
+        val playingSessionIds = playingSessions
+        view.findViewById<ImageView>(R.id.start_group_icon)
+            .setImageResource(
+                if (!isEditMode && playingSessionIds.contains(header.sessionId))
+                    R.drawable.icon_pause
+                else
+                    R.drawable.icon_play
+            )
+
         view.findViewById<View>(R.id.reset_group).setOnClickListener {
             onResetGroup(header.sessionId)
-        }
-
-        view.findViewById<View>(R.id.add_task).setOnClickListener {
-            showAddTaskDialog(header, position)
         }
 
         FontManager.applyToView(context, view)
@@ -234,26 +256,7 @@ class SessionAdapter(
     //  Play/pause icon on the active header
 
     fun setGroupPlayingState(sessionId: Long, playing: Boolean) {
-        val listView = (context as? android.app.Activity)
-            ?.findViewById<ListView>(R.id.task_list) ?: return
-
-        val firstVisible = listView.firstVisiblePosition
-
-        for (i in items.indices) {
-            val item = items[i]
-            if (item is SessionItem.Header && item.sessionId == sessionId) {
-                val local = i - firstVisible
-                if (local >= 0 && local < listView.childCount) {
-                    val headerView = listView.getChildAt(local) ?: continue
-                    headerView.findViewById<ImageView>(R.id.start_group_icon)
-                        ?.setImageResource(
-                            if (playing) R.drawable.icon_pause else R.drawable.icon_play
-                        )
-                }
-                break
-            }
-        }
-
+        if (playing) playingSessions.add(sessionId) else playingSessions.remove(sessionId)
         notifyDataSetChanged()
     }
 

@@ -17,6 +17,19 @@
         android:textColor="@color/foreground" />
 
     <FrameLayout
+        android:id="@+id/edit_session_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12sp">
+
+        <ImageView
+            android:layout_width="18sp"
+            android:layout_height="18sp"
+            android:src="@drawable/icon_edit"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/add_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
