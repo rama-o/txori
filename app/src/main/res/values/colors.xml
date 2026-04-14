@@ -5,9 +5,9 @@
     <color name="bg_secondary">#1f1f29</color>
     <color name="bg_tertiary">#322f1b</color>
     <color name="bg_4">#2E324D</color>
-    <color name="accent">#abd68e</color>
+    <color name="accent_tertiary">#abd68e</color>
     <color name="accent_secondary">#cdc58b</color>
-    <color name="accent_tertiary">#DCD07C</color>
+    <color name="accent">#DCD07C</color>
     <color name="disabled">#888</color>
     <color name="progress">#253F71</color>
     <color name="task_frequency">#71ACC7</color>

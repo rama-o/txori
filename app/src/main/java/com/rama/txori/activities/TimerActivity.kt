@@ -17,7 +17,7 @@ class TimerActivity : CsActivity() {
     private lateinit var timerButton: TextView
     private lateinit var editView: LinearLayout
     private lateinit var timerInput: EditText
-    private lateinit var addTimer: View
+    private lateinit var addTimer: WdButton
     private lateinit var startButton: WdButton
     private lateinit var resetButton: WdButton
     private lateinit var editModeButton: WdButton
@@ -91,6 +91,7 @@ class TimerActivity : CsActivity() {
             editView.visibility = View.VISIBLE
             startButton.visibility = View.GONE
             resetButton.visibility = View.GONE
+            addTimer.visibility = View.VISIBLE
 
             val digits = timerButton.text.toString()
                 .filter { it.isDigit() }
@@ -108,6 +109,7 @@ class TimerActivity : CsActivity() {
             editModeButton.setText("Switch to edit mode")
 
             editView.visibility = View.GONE
+            addTimer.visibility = View.GONE
             timerButton.visibility = View.VISIBLE
             startButton.visibility = View.VISIBLE
             resetButton.visibility = View.VISIBLE
