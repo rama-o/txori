@@ -1,8 +1,8 @@
 package com.rama.txori.activities
 
+import android.os.SystemClock
 import android.content.Context
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -21,13 +21,14 @@ class TimerActivity : CsActivity() {
     private lateinit var startButton: WdButton
     private lateinit var resetButton: WdButton
     private lateinit var editModeButton: WdButton
-
-    private var timer: CountDownTimer? = null
     private var isRunning = false
 
     private var initialMs = 0L
     private var remainingMs = 0L
     private var isEditMode = false
+    private var startTime = 0L
+    private var pausedAt = 0L
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,34 +135,45 @@ class TimerActivity : CsActivity() {
         setEditMode(false)
     }
 
+    private val ticker = object : Runnable {
+        override fun run() {
+            if (!isRunning) return
+
+            val elapsed = SystemClock.elapsedRealtime() - startTime
+            val msLeft = initialMs - elapsed
+
+            if (msLeft <= 0) {
+                timerButton.text = "00:00:00"
+                isRunning = false
+                remainingMs = 0L
+                return
+            }
+
+            remainingMs = msLeft
+            timerButton.text = formatMillis(msLeft)
+
+            handler.postDelayed(this, 16) // smooth updates (~60fps)
+        }
+    }
+
     private fun startTimer() {
         if (remainingMs <= 0L) return
-
         isRunning = true
-
-        timer = object : CountDownTimer(remainingMs, 1000) {
-            override fun onTick(ms: Long) {
-                remainingMs = ms
-                timerButton.text = formatMillis(ms)
-            }
-
-            override fun onFinish() {
-                remainingMs = 0L
-                isRunning = false
-                timerButton.text = "00:00:00"
-            }
-        }.start()
+        startTime = SystemClock.elapsedRealtime()
+        handler.post(ticker)
     }
 
     private fun pauseTimer() {
-        timer?.cancel()
         isRunning = false
+        handler.removeCallbacks(ticker)
+        pausedAt = remainingMs
     }
 
     private fun resetTimer() {
-        timer?.cancel()
+        handler.removeCallbacks(ticker)
         isRunning = false
         remainingMs = initialMs
+        pausedAt = 0L
         timerButton.text = formatMillis(initialMs)
     }
 
