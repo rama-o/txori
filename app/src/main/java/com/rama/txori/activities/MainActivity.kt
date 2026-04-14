@@ -333,7 +333,6 @@ class MainActivity : CsActivity() {
         val dialog = AlertDialog.Builder(this).setView(dialogView).create()
 
         val input = dialogView.findViewById<EditText>(R.id.edit_text)
-        input.hint = "Group name"
 
         dialogView.findViewById<WdButton>(R.id.yes_button).apply {
             setText("Create")
