@@ -318,8 +318,17 @@ class SessionAdapter(
             visibility = View.VISIBLE
             setText("Delete Group")
             setOnClickListener {
+                dbHelper.deleteSession(db, header.sessionId)
+
+                items.removeAll { item ->
+                    (item is SessionItem.Header && item.sessionId == header.sessionId) ||
+                            (item is SessionItem.Row && item.sessionId == header.sessionId)
+                }
+
+                collapsedSessions.remove(header.sessionId)
+                notifyDataSetChanged()
+                onDataChanged()
                 dialog.dismiss()
-                showDeleteGroupDialog(header)
             }
         }
 
@@ -371,26 +380,6 @@ class SessionAdapter(
             .setOnClickListener { dialog.dismiss() }
 
         dialog.show()
-    }
-
-    private fun showDeleteGroupDialog(header: SessionItem.Header) {
-        AlertDialog.Builder(context)
-            .setTitle("Delete \"${header.name}\"?")
-            .setMessage("This will remove the group and all its tasks from the list.")
-            .setPositiveButton("Delete") { _, _ ->
-                dbHelper.deleteSession(db, header.sessionId)
-
-                items.removeAll { item ->
-                    (item is SessionItem.Header && item.sessionId == header.sessionId) ||
-                            (item is SessionItem.Row && item.sessionId == header.sessionId)
-                }
-
-                collapsedSessions.remove(header.sessionId)
-                notifyDataSetChanged()
-                onDataChanged()
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
     }
 
     private fun showEditTaskDialog(row: SessionItem.Row, position: Int) {
