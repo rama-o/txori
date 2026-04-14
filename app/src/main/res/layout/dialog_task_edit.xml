@@ -33,6 +33,7 @@
         android:singleLine="true"
         android:textSize="16sp"
         android:padding="16sp"
+        android:text="New Task"
         android:layout_marginBottom="8sp"
         android:background="@color/input" />
 

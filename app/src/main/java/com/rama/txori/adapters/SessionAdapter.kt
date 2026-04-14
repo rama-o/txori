@@ -314,7 +314,7 @@ class SessionAdapter(
         }
 
         // Delete button deletes the group
-        dialogView.findViewById<WdButton>(R.id.reset_button).apply {
+        dialogView.findViewById<WdButton>(R.id.delete_group_button).apply {
             visibility = View.VISIBLE
             setText("Delete Group")
             setOnClickListener {

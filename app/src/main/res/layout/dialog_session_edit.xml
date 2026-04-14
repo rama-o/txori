@@ -39,7 +39,7 @@
         android:text="@string/save" />
 
     <com.rama.txori.widgets.WdButton
-        android:id="@+id/reset_button"
+        android:id="@+id/delete_group_button"
         android:layout_width="match_parent"
         android:layout_marginBottom="8sp"
         android:layout_height="wrap_content"

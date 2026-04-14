@@ -354,7 +354,7 @@ class MainActivity : CsActivity() {
             }
         }
 
-        dialogView.findViewById<WdButton>(R.id.reset_button).visibility = View.GONE
+        dialogView.findViewById<WdButton>(R.id.delete_group_button).visibility = View.GONE
 
         dialogView.findViewById<WdButton>(R.id.no_button).setOnClickListener { dialog.dismiss() }
         dialog.show()

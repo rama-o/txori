@@ -14,8 +14,12 @@
             android:label="About" />
 
         <activity
-            android:name=".activities.SettingsActivity"
-            android:label="Settings" />
+            android:name=".activities.StopwatchActivity"
+            android:label="Stopwatch" />
+
+        <activity
+            android:name=".activities.TimerActivity"
+            android:label="Timer" />
 
         <activity
             android:name=".activities.MainActivity"
