@@ -73,7 +73,7 @@
                 android:layout_width="24sp"
                 android:layout_height="24sp"
                 android:layout_gravity="center"
-                android:src="@drawable/icon_star_solid"
+                android:src="@drawable/icon_info_circle_solid"
                 android:textSize="16sp" />
         </FrameLayout>
     </LinearLayout>

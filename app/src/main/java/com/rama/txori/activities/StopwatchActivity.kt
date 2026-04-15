@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.view.View
 import android.widget.TextView
 import com.rama.txori.CsActivity
 import com.rama.txori.R
 import com.rama.txori.widgets.WdButton
+import com.rama.txori.widgets.WdNavbar
 
 class StopwatchActivity : CsActivity() {
 
@@ -18,6 +20,7 @@ class StopwatchActivity : CsActivity() {
 
     private var startTime = 0L
     private var pausedElapsed = 0L
+    private lateinit var navbar: WdNavbar
 
     private val ticker = object : Runnable {
         override fun run() {
@@ -37,11 +40,16 @@ class StopwatchActivity : CsActivity() {
         applyEdgeToEdgePadding(root)
         applyFont(root)
 
+        navbar = findViewById(R.id.navbar)
+
         counterView = findViewById(R.id.counter)
 
         counterView?.setOnClickListener {
-            if (isRunning) pauseStopwatch()
-            else startStopwatch()
+            if (isRunning) {
+                pauseStopwatch()
+            } else {
+                startStopwatch()
+            }
         }
 
         counterView?.setOnLongClickListener {
@@ -55,18 +63,21 @@ class StopwatchActivity : CsActivity() {
     }
 
     private fun startStopwatch() {
+        navbar.visibility = View.GONE
         startTime = SystemClock.elapsedRealtime() - pausedElapsed
         isRunning = true
         handler.post(ticker)
     }
 
     private fun pauseStopwatch() {
+        navbar.visibility = View.VISIBLE
         pausedElapsed = SystemClock.elapsedRealtime() - startTime
         isRunning = false
         handler.removeCallbacks(ticker)
     }
 
     private fun resetStopwatch() {
+        navbar.visibility = View.VISIBLE
         isRunning = false
         pausedElapsed = 0L
         handler.removeCallbacks(ticker)
