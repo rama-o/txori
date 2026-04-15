@@ -6,6 +6,7 @@ import android.os.CountDownTimer
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import com.rama.txori.CsActivity
@@ -15,6 +16,7 @@ import com.rama.txori.SessionItem
 import com.rama.txori.adapters.SessionAdapter
 import com.rama.txori.managers.FontManager
 import com.rama.txori.widgets.WdButton
+import com.rama.txori.widgets.WdNavbar
 
 class MainActivity : CsActivity() {
     private var beepArmed: Boolean = false
@@ -34,6 +36,9 @@ class MainActivity : CsActivity() {
     private lateinit var taskNameView: TextView
     private lateinit var timerView: TextView
     private lateinit var nextTaskView: TextView
+    private lateinit var globalControllers: LinearLayout
+    private lateinit var editButton: WdButton
+    private lateinit var navbar: WdNavbar
 
     // Flat list of all items
     private val items: MutableList<SessionItem> = mutableListOf()
@@ -60,17 +65,17 @@ class MainActivity : CsActivity() {
         taskNameView = findViewById(R.id.current_task_name)
         timerView = findViewById(R.id.current_task_timer)
         nextTaskView = findViewById(R.id.next_task_name)
+        globalControllers = findViewById(R.id.controllers)
+        editButton = findViewById(R.id.edit_button)
+        navbar = findViewById(R.id.navbar)
 
         val workButton =
             findViewById<WdButton>(R.id.work_button)
-        val editButton =
-            findViewById<WdButton>(R.id.edit_button)
         val repeatTaskButton = findViewById<View>(R.id.repeat_task)
         val increaseTimeButton = findViewById<View>(R.id.increase_duration)
         val playTimeButton = findViewById<View>(R.id.start_task)
         val skipTaskButton = findViewById<View>(R.id.skip_task)
         val timeContainer = findViewById<View>(R.id.time_container)
-        var globalPlayPauseicon = playTimeButton.findViewById<ImageView>(R.id.play_pause_icon)
 
         db = dbHelper.writableDatabase
         loadItems()
@@ -174,6 +179,9 @@ class MainActivity : CsActivity() {
         } else {
             R.drawable.icon_play
         }
+
+        editButton.visibility = if (isRunning) View.GONE else View.VISIBLE
+        navbar.visibility = if (isRunning) View.GONE else View.VISIBLE
 
         findViewById<ImageView>(R.id.play_pause_icon)
             ?.setImageResource(icon)
@@ -304,6 +312,7 @@ class MainActivity : CsActivity() {
         adapter.setActiveItemIndex(-1)
         setPlayingState(false)
         adapter.setGroupPlayingState(doneSessionId, false)
+        globalControllers.visibility = View.GONE
     }
 
     //  Timer
@@ -326,6 +335,7 @@ class MainActivity : CsActivity() {
     private fun launchTimer(durationMs: Long) {
         beepArmed = false
         lastBeepSecond = -1
+        globalControllers.visibility = View.VISIBLE
         updateTimerDisplay(durationMs)
 
         currentTimer = object : CountDownTimer(durationMs, 100) {

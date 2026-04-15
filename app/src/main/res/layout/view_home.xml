@@ -46,6 +46,8 @@
             android:text="---" />
 
         <LinearLayout
+            android:id="@+id/controllers"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -150,6 +152,7 @@
         android:text="Switch to Work Mode" />
 
     <com.rama.txori.widgets.WdNavbar
+        android:id="@+id/navbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
