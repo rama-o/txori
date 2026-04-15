@@ -53,11 +53,34 @@ class SessionAdapter(
 
         val listView = (context as? android.app.Activity)
             ?.findViewById<ListView>(R.id.task_list) ?: return
+
+        // Convert the raw items[] index to a visible list position,
+        // accounting for collapsed rows above it
+        val visiblePosition = rawIndexToVisiblePosition(index)
+        if (visiblePosition < 0) return
+
         val firstVisible = listView.firstVisiblePosition
-        val localPosition = index - firstVisible
+        val localPosition = visiblePosition - firstVisible
         if (localPosition < 0 || localPosition >= listView.childCount) return
         val itemView = listView.getChildAt(localPosition) ?: return
         applyProgress(progress, itemView)
+    }
+
+    // Maps a raw index in items[] to its visible ListView position, or -1 if hidden.
+    private fun rawIndexToVisiblePosition(rawIndex: Int): Int {
+        val item = items.getOrNull(rawIndex) ?: return -1
+        // If it's a row in a collapsed session it isn't visible at all
+        if (item is SessionItem.Row && collapsedSessions.contains(item.sessionId)) return -1
+        var visible = 0
+        for (i in items.indices) {
+            val current = items[i]
+            val skip = current is SessionItem.Row && collapsedSessions.contains(current.sessionId)
+            if (!skip) {
+                if (i == rawIndex) return visible
+                visible++
+            }
+        }
+        return -1
     }
 
     // filter out rows belonging to collapsed sessions

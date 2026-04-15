@@ -235,8 +235,8 @@ class DatabaseHelper(context: Context) :
             insertSessionStep(db, s1Id, getOrCreateTaskId(db, label, duration), n++)
         }
 
-        fun addRest() {
-            s1("Rest", 60)
+        fun addRest(unit: Int = 60) {
+            s1("Rest", unit)
         }
 
         s1("Getting Ready", 15)
@@ -245,24 +245,24 @@ class DatabaseHelper(context: Context) :
         s1("Dead Hang", 40)
         addRest()
 
-        s1("Pull-Up x8", 60)
-        addRest()
+        s1("Pull-Up x8", 30)
+        addRest(90)
         s1("Push-Up x40", 60)
         addRest()
 
-        s1("Pull-Up x8", 60)
-        addRest()
+        s1("Pull-Up x8", 30)
+        addRest(90)
         s1("Push-Up x30", 60)
         addRest()
 
-        s1("Pull-Up x8", 60)
-        addRest()
+        s1("Pull-Up x8", 30)
+        addRest(90)
         s1("Push-Up x30", 60)
         addRest()
 
         repeat(3) {
-            s1("Chin-Up x8", 60)
-            addRest()
+            s1("Chin-Up x8", 30)
+            addRest(90)
         }
 
         s1("Hip Thrust x30", 60)
@@ -286,8 +286,9 @@ class DatabaseHelper(context: Context) :
         s1("Plank", 60)
         addRest()
         s1("Dead Hang", 60)
+        addRest(15)
         s1("Deep Squat", 60)
+        addRest(15)
         s1("Split Stretch", 60)
-        addRest()
     }
 }

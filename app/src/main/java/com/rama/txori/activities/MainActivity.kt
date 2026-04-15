@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import com.rama.txori.CsActivity
@@ -66,9 +67,10 @@ class MainActivity : CsActivity() {
             findViewById<WdButton>(R.id.edit_button)
         val repeatTaskButton = findViewById<View>(R.id.repeat_task)
         val increaseTimeButton = findViewById<View>(R.id.increase_duration)
-        val completeTaskButton = findViewById<View>(R.id.complete_task)
+        val playTimeButton = findViewById<View>(R.id.start_task)
         val skipTaskButton = findViewById<View>(R.id.skip_task)
         val timeContainer = findViewById<View>(R.id.time_container)
+        var globalPlayPauseicon = playTimeButton.findViewById<ImageView>(R.id.play_pause_icon)
 
         db = dbHelper.writableDatabase
         loadItems()
@@ -104,9 +106,35 @@ class MainActivity : CsActivity() {
             }
         }
 
-        val advance: (View) -> Unit = { advanceToNext() }
-        completeTaskButton.setOnClickListener(advance)
-        skipTaskButton.setOnClickListener(advance)
+        playTimeButton.setOnClickListener {
+            if (currentItemIndex < 0) return@setOnClickListener
+
+            if (isRunning) {
+                // PAUSE
+                pauseTimer()
+                globalTimer?.cancel()
+
+                setPlayingState(false)
+
+            } else {
+                // PLAY / RESUME
+                setPlayingState(true)
+
+                if (remainingMs <= 0L) {
+                    launchTimer(remainingMs)
+                } else {
+                    resumeTimer()
+                }
+
+                if (globalRemainingMs > 0) {
+                    launchGlobalTimer(globalRemainingMs)
+                }
+            }
+        }
+
+        skipTaskButton.setOnClickListener({
+            advanceToNext()
+        })
 
         val addGroupButton = findViewById<WdButton>(R.id.add_group_button)
         addGroupButton.setOnClickListener {
@@ -136,6 +164,21 @@ class MainActivity : CsActivity() {
         }
     }
 
+    private fun setPlayingState(playing: Boolean) {
+        isRunning = playing
+
+        adapter.setGroupPlayingState(activeSessionId, playing)
+
+        val icon = if (playing) {
+            R.drawable.icon_pause
+        } else {
+            R.drawable.icon_play
+        }
+
+        findViewById<ImageView>(R.id.play_pause_icon)
+            ?.setImageResource(icon)
+    }
+
     //  Data loading
 
     private fun loadItems() {
@@ -157,11 +200,11 @@ class MainActivity : CsActivity() {
             activeSessionId == sessionId && isRunning -> {
                 pauseTimer()
                 globalTimer?.cancel()
-                adapter.setGroupPlayingState(sessionId, false)
+                setPlayingState(false)
             }
 
             activeSessionId == sessionId && !isRunning && currentItemIndex >= 0 -> {
-                adapter.setGroupPlayingState(sessionId, true)
+                setPlayingState(true)
                 resumeTimer()
                 launchGlobalTimer(globalRemainingMs)
             }
@@ -169,10 +212,14 @@ class MainActivity : CsActivity() {
             else -> {
                 stopCurrentTimer()
                 globalTimer?.cancel()
+                // Clear icon on the previously active session if different
+                if (activeSessionId != -1L && activeSessionId != sessionId) {
+                    adapter.setGroupPlayingState(activeSessionId, false)
+                }
                 activeSessionId = sessionId
                 globalRemainingMs = calculateSessionRemainingMs(sessionId, startIndex)
                 startFromIndex(startIndex)
-                adapter.setGroupPlayingState(sessionId, true)
+                setPlayingState(true)
                 launchGlobalTimer(globalRemainingMs)
             }
         }
@@ -197,7 +244,7 @@ class MainActivity : CsActivity() {
             activeSessionId = -1
             currentItemIndex = -1
             adapter.setActiveItemIndex(-1)
-            adapter.setGroupPlayingState(sessionId, false)
+            setPlayingState(false)
             taskNameView.text = "Kaixo!"
             timerView.text = "00:00"
             nextTaskView.text = "---"
@@ -246,16 +293,16 @@ class MainActivity : CsActivity() {
     }
 
     private fun finishGroup() {
-        isRunning = false
-        globalTimer?.cancel()
-        globalRemainingMs = 0
         val doneSessionId = activeSessionId
         activeSessionId = -1
         currentItemIndex = -1
+        globalTimer?.cancel()
+        globalRemainingMs = 0
         taskNameView.text = "Done!"
         timerView.text = "00:00"
         nextTaskView.text = "---"
         adapter.setActiveItemIndex(-1)
+        setPlayingState(false)
         adapter.setGroupPlayingState(doneSessionId, false)
     }
 
@@ -277,8 +324,8 @@ class MainActivity : CsActivity() {
 
     // Replace launchTimer entirely
     private fun launchTimer(durationMs: Long) {
-        isRunning = true
         beepArmed = false
+        lastBeepSecond = -1
         updateTimerDisplay(durationMs)
 
         currentTimer = object : CountDownTimer(durationMs, 100) {
