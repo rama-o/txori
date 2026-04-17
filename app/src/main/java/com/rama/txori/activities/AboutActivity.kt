@@ -15,6 +15,7 @@ class AboutActivity : CsActivity() {
 
         val root = findViewById<View>(android.R.id.content)
         applyEdgeToEdgePadding(root)
+        applyFont(root)
 
         val version = packageManager.getPackageInfo(packageName, 0).versionCode
         val nameView = findViewById<TextView>(R.id.name_version)
