@@ -33,6 +33,7 @@ class WorkoutManager(private val listener: Listener) {
     private var globalTimer: CountDownTimer? = null
     private var taskGeneration: Int = 0   // incremented on every new task; guards stale callbacks
     private var lastBeepSecond: Long = -1
+    private var taskDurationMs: Long = 0L
 
     //  Public actions 
 
@@ -76,6 +77,7 @@ class WorkoutManager(private val listener: Listener) {
         if (!isRunning) return
         cancelTaskTimer()
         remainingMs += ms
+        taskDurationMs += ms
         cancelGlobalTimer()
         globalRemainingMs += ms
         launchGlobalTimer(globalRemainingMs)
@@ -139,6 +141,7 @@ class WorkoutManager(private val listener: Listener) {
         cancelTaskTimer()
         currentItemIndex = index
         remainingMs = row.task.duration * 1_000L
+        taskDurationMs = remainingMs
         lastBeepSecond = -1
         isRunning = true
         listener.onTaskStarted(index, row.task.label, remainingMs)
@@ -166,11 +169,10 @@ class WorkoutManager(private val listener: Listener) {
         val generation = ++taskGeneration
         taskTimer = object : CountDownTimer(durationMs, 100) {
             override fun onTick(millisUntilFinished: Long) {
-                if (generation != taskGeneration) return   // stale — discard
+                if (generation != taskGeneration) return
                 remainingMs = millisUntilFinished
-                val row = items.getOrNull(currentItemIndex) as? SessionItem.Row
-                val total = (row?.task?.duration ?: 1) * 1000L
-                val progress = (1f - millisUntilFinished.toFloat() / total).coerceIn(0f, 1f)
+                val progress =
+                    (1f - millisUntilFinished.toFloat() / taskDurationMs).coerceIn(0f, 1f)
                 listener.onTaskTick(currentItemIndex, millisUntilFinished, progress)
 
                 val secondsLeft = millisUntilFinished / 1000
