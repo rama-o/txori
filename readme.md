@@ -30,7 +30,7 @@ access, and no external APIs.
 
 - Available on **[F-Droid](https://f-droid.org/app/com.rama.txori)** for easy installation and
   updates.
-- Download the latest APK from the **[Releases page](https://github.com/rama-o/txori/releases)** or
+- Download the latest APK from the **[Releases page](https://github.com/rama-io/txori/releases)** or
   use **[Obtanium](https://github.com/ImranR98/Obtainium)** to get the newest version directly
   from the github releases.
 

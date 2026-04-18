@@ -46,7 +46,7 @@
     <string name="icon_ads_desc">No Ads</string>
     <string name="icon_location_desc">No Trackers</string>
     <string name="icon_offline_desc">Works Offline</string>
-    <string name="main_project_url" translatable="false">github.com/rama-o/txori</string>
+    <string name="main_project_url" translatable="false">github.com/rama-io/txori</string>
     <string name="app_header">App</string>
     <string name="icons_header">Icons</string>
     <string name="fonts_header">Fonts</string>
