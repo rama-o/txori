@@ -1,1 +1,1 @@
-Built entirely in native Kotlin, Txori runs fully on-device, avoids tracking, no internet access, and no external APIs.
+Built entirely in native Kotlin, Txori runs fully on-device, avoids tracking and no internet access.

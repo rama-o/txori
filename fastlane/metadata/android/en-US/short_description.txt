@@ -1,1 +1,1 @@
-A minimal, privacy-first focus session app designed to help you stay present and intentional with your time.
+Privacy-first focus session app.
