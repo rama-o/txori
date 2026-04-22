@@ -65,8 +65,7 @@
                 <ImageView
                     android:layout_width="24sp"
                     android:layout_height="24sp"
-                    android:src="@drawable/icon_refresh"
-                    android:textSize="16sp" />
+                    android:src="@drawable/icon_refresh" />
             </FrameLayout>
 
             <FrameLayout
@@ -80,8 +79,7 @@
                 <ImageView
                     android:layout_width="24sp"
                     android:layout_height="24sp"
-                    android:src="@drawable/icon_30_timer"
-                    android:textSize="16sp" />
+                    android:src="@drawable/icon_30_timer" />
             </FrameLayout>
 
             <FrameLayout
@@ -96,8 +94,7 @@
                     android:id="@+id/play_pause_icon"
                     android:layout_width="24sp"
                     android:layout_height="24sp"
-                    android:src="@drawable/icon_play"
-                    android:textSize="16sp" />
+                    android:src="@drawable/icon_play" />
             </FrameLayout>
 
             <FrameLayout
@@ -110,8 +107,7 @@
                 <ImageView
                     android:layout_width="24sp"
                     android:layout_height="24sp"
-                    android:src="@drawable/icon_next"
-                    android:textSize="16sp" />
+                    android:src="@drawable/icon_next" />
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>

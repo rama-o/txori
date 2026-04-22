@@ -175,6 +175,12 @@ class SessionAdapter(
             notifyDataSetChanged()
         }
 
+        val ascendButton = view.findViewById<FrameLayout>(R.id.ascend_button)
+        ascendButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+
+        val descendButton = view.findViewById<FrameLayout>(R.id.descend_button)
+        descendButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+
         val editSessionButton = view.findViewById<View>(R.id.edit_session_button)
         editSessionButton.visibility =
             if (!isEditMode) View.GONE else View.VISIBLE
@@ -263,6 +269,12 @@ class SessionAdapter(
 
         val p = if (position == activeItemIndex) activeProgress else 0f
         applyProgress(p, view)
+
+        val ascendButton = view.findViewById<FrameLayout>(R.id.ascend_button)
+        ascendButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+
+        val descendButton = view.findViewById<FrameLayout>(R.id.descend_button)
+        descendButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
 
         val editTaskButton = view.findViewById<View>(R.id.edit_task_button)
         editTaskButton.setOnClickListener {

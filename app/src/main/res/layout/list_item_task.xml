@@ -38,8 +38,33 @@
                 <ImageView
                     android:layout_width="18sp"
                     android:layout_height="18sp"
-                    android:src="@drawable/icon_edit"
-                    android:textSize="16sp" />
+                    android:src="@drawable/icon_edit" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/ascend_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12sp">
+
+                <ImageView
+                    android:layout_width="24sp"
+                    android:layout_height="24sp"
+                    android:src="@drawable/icon_chevron_up_solid"
+                    android:contentDescription="Ascend" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/descend_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12sp">
+
+                <ImageView
+                    android:layout_width="24sp"
+                    android:layout_height="24sp"
+                    android:src="@drawable/icon_chevron_down_solid"
+                    android:contentDescription="Descend" />
             </FrameLayout>
 
             <TextView
