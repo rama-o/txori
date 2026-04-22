@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.content.ContentValues
 
 class DatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, "tasks.db", null, 1) {
+    SQLiteOpenHelper(context, "tasks.db", null, 2) {
 
     override fun onCreate(db: SQLiteDatabase) {
 
@@ -26,7 +26,8 @@ class DatabaseHelper(context: Context) :
             """
             CREATE TABLE sessions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT
+                name TEXT,
+                session_order INTEGER DEFAULT 0
             )
             """.trimIndent()
         )
@@ -75,7 +76,7 @@ class DatabaseHelper(context: Context) :
         return tasks
     }
 
-    /** Get tasks for a session, ss.id is carried as stepId so we can delete the exact row */
+    /** Get tasks for a session, ss.id is carried as stepId so we can delete/reorder the exact row */
     fun getSessionTasks(db: SQLiteDatabase, sessionId: Long): MutableList<Task> {
         val tasks = mutableListOf<Task>()
         val cursor = db.rawQuery(
@@ -104,7 +105,7 @@ class DatabaseHelper(context: Context) :
 
     fun getSessions(db: SQLiteDatabase): List<Pair<Long, String>> {
         val result = mutableListOf<Pair<Long, String>>()
-        val cursor = db.rawQuery("SELECT id, name FROM sessions ORDER BY id", null)
+        val cursor = db.rawQuery("SELECT id, name FROM sessions ORDER BY session_order, id", null)
         while (cursor.moveToNext()) {
             result.add(Pair(cursor.getLong(0), cursor.getString(1)))
         }
@@ -115,7 +116,13 @@ class DatabaseHelper(context: Context) :
     // PUBLIC WRITE HELPERS
 
     fun createSession(db: SQLiteDatabase, name: String): Long {
-        val values = ContentValues().apply { put("name", name) }
+        val cursor = db.rawQuery("SELECT COALESCE(MAX(session_order), 0) FROM sessions", null)
+        val maxOrder = if (cursor.moveToFirst()) cursor.getInt(0) else 0
+        cursor.close()
+        val values = ContentValues().apply {
+            put("name", name)
+            put("session_order", maxOrder + 1)
+        }
         return db.insert("sessions", null, values)
     }
 
@@ -141,9 +148,55 @@ class DatabaseHelper(context: Context) :
         return taskId
     }
 
-    /** Delete a single step row by its own primary key. avoids removing duplicate tasks across sessions */
+    /** Delete a single step row by its own primary key. Avoids removing duplicate tasks across sessions. */
     fun removeStepFromSession(db: SQLiteDatabase, stepId: Long) {
         db.delete("session_steps", "id = ?", arrayOf(stepId.toString()))
+    }
+
+    /** Swap step_order of two adjacent tasks within a session. */
+    fun swapStepOrder(db: SQLiteDatabase, stepIdA: Long, stepIdB: Long) {
+        val cursorA = db.rawQuery(
+            "SELECT step_order FROM session_steps WHERE id = ?",
+            arrayOf(stepIdA.toString())
+        )
+        val orderA = if (cursorA.moveToFirst()) cursorA.getInt(0) else return
+        cursorA.close()
+
+        val cursorB = db.rawQuery(
+            "SELECT step_order FROM session_steps WHERE id = ?",
+            arrayOf(stepIdB.toString())
+        )
+        val orderB = if (cursorB.moveToFirst()) cursorB.getInt(0) else return
+        cursorB.close()
+
+        db.execSQL("UPDATE session_steps SET step_order = ? WHERE id = ?", arrayOf(orderB, stepIdA))
+        db.execSQL("UPDATE session_steps SET step_order = ? WHERE id = ?", arrayOf(orderA, stepIdB))
+    }
+
+    /** Swap session_order of two adjacent sessions. */
+    fun swapSessionOrder(db: SQLiteDatabase, sessionIdA: Long, sessionIdB: Long) {
+        val cursorA = db.rawQuery(
+            "SELECT session_order FROM sessions WHERE id = ?",
+            arrayOf(sessionIdA.toString())
+        )
+        val orderA = if (cursorA.moveToFirst()) cursorA.getInt(0) else return
+        cursorA.close()
+
+        val cursorB = db.rawQuery(
+            "SELECT session_order FROM sessions WHERE id = ?",
+            arrayOf(sessionIdB.toString())
+        )
+        val orderB = if (cursorB.moveToFirst()) cursorB.getInt(0) else return
+        cursorB.close()
+
+        db.execSQL(
+            "UPDATE sessions SET session_order = ? WHERE id = ?",
+            arrayOf(orderB, sessionIdA)
+        )
+        db.execSQL(
+            "UPDATE sessions SET session_order = ? WHERE id = ?",
+            arrayOf(orderA, sessionIdB)
+        )
     }
 
     // PRIVATE HELPERS
@@ -167,8 +220,11 @@ class DatabaseHelper(context: Context) :
         return db.insert("tasks", null, values)
     }
 
-    private fun insertSession(db: SQLiteDatabase, name: String): Long {
-        val values = ContentValues().apply { put("name", name) }
+    private fun insertSession(db: SQLiteDatabase, name: String, order: Int): Long {
+        val values = ContentValues().apply {
+            put("name", name)
+            put("session_order", order)
+        }
         return db.insert("sessions", null, values)
     }
 
@@ -214,7 +270,7 @@ class DatabaseHelper(context: Context) :
     private fun insertInitialData(db: SQLiteDatabase) {
 
         var n = 1
-        val s0Id = insertSession(db, "Morning Reset")
+        val s0Id = insertSession(db, "Morning Reset", 1)
         fun s0(label: String, duration: Int) {
             insertSessionStep(db, s0Id, getOrCreateTaskId(db, label, duration), n++)
         }
@@ -225,7 +281,7 @@ class DatabaseHelper(context: Context) :
         s0("Tidy Room", 60 * 5)
         s0("Wash Dishes", 60 * 5)
 
-        val s1Id = insertSession(db, "Workout")
+        val s1Id = insertSession(db, "Workout", 2)
         fun s1(label: String, duration: Int) {
             insertSessionStep(db, s1Id, getOrCreateTaskId(db, label, duration), n++)
         }

@@ -54,8 +54,6 @@ class SessionAdapter(
         val listView = (context as? android.app.Activity)
             ?.findViewById<ListView>(R.id.task_list) ?: return
 
-        // Convert the raw items[] index to a visible list position,
-        // accounting for collapsed rows above it
         val visiblePosition = rawIndexToVisiblePosition(index)
         if (visiblePosition < 0) return
 
@@ -66,10 +64,8 @@ class SessionAdapter(
         applyProgress(progress, itemView)
     }
 
-    // Maps a raw index in items[] to its visible ListView position, or -1 if hidden.
     fun rawIndexToVisiblePosition(rawIndex: Int): Int {
         val item = items.getOrNull(rawIndex) ?: return -1
-        // If it's a row in a collapsed session it isn't visible at all
         if (item is SessionItem.Row && collapsedSessions.contains(item.sessionId)) return -1
         var visible = 0
         for (i in items.indices) {
@@ -83,7 +79,6 @@ class SessionAdapter(
         return -1
     }
 
-    // filter out rows belonging to collapsed sessions
     override fun getCount(): Int {
         var count = 0
         for (item in items) {
@@ -95,7 +90,6 @@ class SessionAdapter(
         return count
     }
 
-    // Map visible position -> actual items index
     private fun getActualPosition(visiblePosition: Int): Int {
         var visible = 0
         for (i in items.indices) {
@@ -163,8 +157,7 @@ class SessionAdapter(
         val collapseIndicator = if (isCollapsed) "[-]" else "[+]"
 
         val groupLabel = view.findViewById<TextView>(R.id.group_label)
-        groupLabel.text =
-            "$collapseIndicator ${header.name} :: $timeStr"
+        groupLabel.text = "$collapseIndicator ${header.name} :: $timeStr"
 
         groupLabel.setOnClickListener {
             if (collapsedSessions.contains(header.sessionId)) {
@@ -175,24 +168,69 @@ class SessionAdapter(
             notifyDataSetChanged()
         }
 
+        // --- Ascend (move session up) ---
         val ascendButton = view.findViewById<FrameLayout>(R.id.ascend_button)
         ascendButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        ascendButton.setOnClickListener {
+            val idx = items.indexOf(header)
+            // Find the header immediately above this one
+            val prevHeaderIdx = (idx - 1 downTo 0).firstOrNull { items[it] is SessionItem.Header }
+            if (prevHeaderIdx != null) {
+                val prevHeader = items[prevHeaderIdx] as SessionItem.Header
+                dbHelper.swapSessionOrder(db, header.sessionId, prevHeader.sessionId)
+                // Collect all items belonging to each session
+                val thisGroup = items.filter {
+                    (it is SessionItem.Header && it.sessionId == header.sessionId) ||
+                            (it is SessionItem.Row && it.sessionId == header.sessionId)
+                }
+                val prevGroup = items.filter {
+                    (it is SessionItem.Header && it.sessionId == prevHeader.sessionId) ||
+                            (it is SessionItem.Row && it.sessionId == prevHeader.sessionId)
+                }
+                items.removeAll(thisGroup.toSet())
+                items.removeAll(prevGroup.toSet())
+                items.addAll(prevHeaderIdx, thisGroup + prevGroup)
+                notifyDataSetChanged()
+                onDataChanged()
+            }
+        }
 
+        // --- Descend (move session down) ---
         val descendButton = view.findViewById<FrameLayout>(R.id.descend_button)
         descendButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        descendButton.setOnClickListener {
+            val idx = items.indexOf(header)
+            // Find the header immediately below this one
+            val nextHeaderIdx =
+                (idx + 1 until items.size).firstOrNull { items[it] is SessionItem.Header }
+            if (nextHeaderIdx != null) {
+                val nextHeader = items[nextHeaderIdx] as SessionItem.Header
+                dbHelper.swapSessionOrder(db, header.sessionId, nextHeader.sessionId)
+                val thisBlock = items.filter {
+                    (it is SessionItem.Header && it.sessionId == header.sessionId) ||
+                            (it is SessionItem.Row && it.sessionId == header.sessionId)
+                }
+                val nextBlock = items.filter {
+                    (it is SessionItem.Header && it.sessionId == nextHeader.sessionId) ||
+                            (it is SessionItem.Row && it.sessionId == nextHeader.sessionId)
+                }
+                items.removeAll(thisBlock.toSet())
+                items.removeAll(nextBlock.toSet())
+                items.addAll(idx, nextBlock + thisBlock)
+                notifyDataSetChanged()
+                onDataChanged()
+            }
+        }
 
         val editSessionButton = view.findViewById<View>(R.id.edit_session_button)
-        editSessionButton.visibility =
-            if (!isEditMode) View.GONE else View.VISIBLE
+        editSessionButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
         editSessionButton.setOnClickListener {
             showEditSessionDialog(header, position)
             true
         }
 
-        // Hide add_task button in edit mode
         val addTaskButton = view.findViewById<View>(R.id.add_task)
-        addTaskButton.visibility =
-            if (!isEditMode) View.GONE else View.VISIBLE
+        addTaskButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
         addTaskButton.setOnClickListener {
             showAddTaskDialog(header, position)
         }
@@ -203,20 +241,16 @@ class SessionAdapter(
         }
         startGroupButton.visibility = if (isEditMode) View.GONE else View.VISIBLE
 
-        // In edit mode force play icon regardless of playing state
-        val playingSessionIds = playingSessions
         view.findViewById<ImageView>(R.id.start_group_icon)
             .setImageResource(
-                if (playingSessionIds.contains(header.sessionId))
+                if (playingSessions.contains(header.sessionId))
                     R.drawable.icon_pause
                 else
                     R.drawable.icon_play
             )
 
         val resetGroupButton = view.findViewById<View>(R.id.reset_group)
-        resetGroupButton.setOnClickListener {
-            onResetGroup(header.sessionId)
-        }
+        resetGroupButton.setOnClickListener { onResetGroup(header.sessionId) }
         resetGroupButton.visibility = if (isEditMode) View.GONE else View.VISIBLE
 
         FontManager.applyToView(context, view)
@@ -270,11 +304,43 @@ class SessionAdapter(
         val p = if (position == activeItemIndex) activeProgress else 0f
         applyProgress(p, view)
 
+        // --- Ascend (move task up within its session) ---
         val ascendButton = view.findViewById<FrameLayout>(R.id.ascend_button)
         ascendButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        ascendButton.setOnClickListener {
+            val idx = items.indexOf(row)
+            // Previous item must be a Row in the same session
+            val prevIdx = idx - 1
+            if (prevIdx >= 0 && items[prevIdx] is SessionItem.Row) {
+                val prevRow = items[prevIdx] as SessionItem.Row
+                if (prevRow.sessionId == row.sessionId) {
+                    dbHelper.swapStepOrder(db, row.task.stepId, prevRow.task.stepId)
+                    items[prevIdx] = row
+                    items[idx] = prevRow
+                    notifyDataSetChanged()
+                    onDataChanged()
+                }
+            }
+        }
 
+        // --- Descend (move task down within its session) ---
         val descendButton = view.findViewById<FrameLayout>(R.id.descend_button)
         descendButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        descendButton.setOnClickListener {
+            val idx = items.indexOf(row)
+            // Next item must be a Row in the same session
+            val nextIdx = idx + 1
+            if (nextIdx < items.size && items[nextIdx] is SessionItem.Row) {
+                val nextRow = items[nextIdx] as SessionItem.Row
+                if (nextRow.sessionId == row.sessionId) {
+                    dbHelper.swapStepOrder(db, row.task.stepId, nextRow.task.stepId)
+                    items[nextIdx] = row
+                    items[idx] = nextRow
+                    notifyDataSetChanged()
+                    onDataChanged()
+                }
+            }
+        }
 
         val editTaskButton = view.findViewById<View>(R.id.edit_task_button)
         editTaskButton.setOnClickListener {
@@ -302,14 +368,13 @@ class SessionAdapter(
         }
     }
 
-    //  Play/pause icon on the active header
-
     fun setGroupPlayingState(sessionId: Long, playing: Boolean) {
         if (playing) playingSessions.add(sessionId) else playingSessions.remove(sessionId)
         notifyDataSetChanged()
     }
 
     //  Dialogs
+
     private fun showEditSessionDialog(header: SessionItem.Header, position: Int) {
         val dialogView = LayoutInflater.from(context)
             .inflate(R.layout.dialog_session_edit, null)
@@ -334,7 +399,6 @@ class SessionAdapter(
                 val values = ContentValues().apply { put("name", newName) }
                 db.update("sessions", values, "id = ?", arrayOf(header.sessionId.toString()))
 
-                // Update header in items list
                 val headerIdx = items.indexOfFirst {
                     it is SessionItem.Header && it.sessionId == header.sessionId
                 }
@@ -348,7 +412,6 @@ class SessionAdapter(
             }
         }
 
-        // Delete button deletes the group
         dialogView.findViewById<WdButton>(R.id.delete_group_button).apply {
             visibility = View.VISIBLE
             setText("Delete Group")
@@ -379,7 +442,6 @@ class SessionAdapter(
         val dialog = AlertDialog.Builder(context).setView(dialogView).create()
 
         dialogView.findViewById<TextView>(R.id.modal_title).setText("Add new task")
-
         dialogView.findViewById<WdButton>(R.id.add_button).setText("Create Task")
 
         val labelInput = dialogView.findViewById<EditText>(R.id.label)
