@@ -15,7 +15,7 @@ android {
         applicationId = "com.rama.txori"
         minSdk = 21
         targetSdk = 36
-        versionCode = 2
+        versionCode = 3
         versionName = "$currentYear.$versionCode"
     }
 
@@ -27,7 +27,7 @@ android {
     applicationVariants.all {
         outputs.all {
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl)
-                    .outputFileName = "txori_${versionName}.apk"
+                .outputFileName = "txori_${versionName}.apk"
         }
     }
 
@@ -35,7 +35,10 @@ android {
         release {
             isMinifyEnabled = false
             vcsInfo.include = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             signingConfig = signingConfigs.getByName("debug")
         }
         debug {

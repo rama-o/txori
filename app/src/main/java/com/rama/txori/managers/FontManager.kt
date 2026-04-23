@@ -16,8 +16,11 @@ object FontManager {
     /** Returns the app typeface, loading it once and caching it forever. */
     fun getTypeface(context: Context): Typeface {
         cached?.let { return it }
-        val tf = ResourcesCompat.getFont(context.applicationContext, R.font.jersey25_regular)
-            ?: Typeface.DEFAULT
+        val tf = try {
+            ResourcesCompat.getFont(context.applicationContext, R.font.jersey25_regular)
+        } catch (e: Exception) {
+            null
+        } ?: Typeface.createFromAsset(context.assets, "fonts/jersey25_regular.otf")
         cached = tf
         return tf
     }
