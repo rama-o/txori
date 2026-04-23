@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.rama.txori.CsActivity
 import com.rama.txori.R
+import com.rama.txori.managers.FontManager
 import com.rama.txori.widgets.WdNavbar
 
 class MainActivity : CsActivity() {
@@ -26,6 +27,9 @@ class MainActivity : CsActivity() {
 
         if (savedInstanceState == null) {
             navigateTo(WdNavbar.Page.HOME)
+            findViewById<View>(R.id.root).post {
+                FontManager.applyToView(this, findViewById(R.id.root))
+            }
         } else {
             currentPage = savedInstanceState
                 .getString(KEY_PAGE)
@@ -39,7 +43,7 @@ class MainActivity : CsActivity() {
         super.onSaveInstanceState(outState)
         outState.putString(KEY_PAGE, currentPage.name)
     }
-
+    
     fun navigateTo(page: WdNavbar.Page) {
         if (page == currentPage && fragmentManager.findFragmentById(R.id.content_container) != null) return
 
@@ -47,16 +51,21 @@ class MainActivity : CsActivity() {
         navbar.setActivePage(page)
 
         val fragment: Fragment = when (page) {
-            WdNavbar.Page.HOME      -> HomeFragment()
+            WdNavbar.Page.HOME -> HomeFragment()
             WdNavbar.Page.STOPWATCH -> StopwatchFragment()
-            WdNavbar.Page.TIMER     -> TimerFragment()
-            WdNavbar.Page.ABOUT     -> AboutFragment()
+            WdNavbar.Page.TIMER -> TimerFragment()
+            WdNavbar.Page.ABOUT -> AboutFragment()
         }
 
         fragmentManager
             .beginTransaction()
             .replace(R.id.content_container, fragment, page.name)
             .commit()
+
+        // Re-apply font after fragment views are attached
+        fragmentManager.executePendingTransactions()
+        val root = findViewById<View>(R.id.root)
+        FontManager.applyToView(this, root)
     }
 
     /** Let HomeFragment show/hide the navbar during a running workout. */

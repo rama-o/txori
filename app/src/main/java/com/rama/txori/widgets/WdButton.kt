@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.rama.txori.R
+import com.rama.txori.managers.FontManager
 
 class WdButton @JvmOverloads constructor(
     context: Context,
@@ -20,6 +21,8 @@ class WdButton @JvmOverloads constructor(
         LayoutInflater.from(context).inflate(R.layout.wd_button, this, true)
         rootFrame = findViewById(R.id.root)
         navText = findViewById(R.id.button_label)
+
+        navText.typeface = FontManager.getTypeface(context)
 
         // Forward clicks from the inner FrameLayout to this custom view
         rootFrame.setOnClickListener { performClick() }
