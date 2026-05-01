@@ -14,7 +14,7 @@ access, and no external APIs.
 
 | Focus                                                                    | Stopwatch                                                                    | About                                                                     |
 |--------------------------------------------------------------------------|------------------------------------------------------------------------------|---------------------------------------------------------------------------|
-| ![Home](./fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![Settings](./fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) | ![About](./fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) |
+| ![Home](./fastlane/metadata/android/en-US/images/phoneScreenshots/1.png) | ![Stopwatch](./fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) | ![About](./fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) |
 
 ---
 
