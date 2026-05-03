@@ -37,6 +37,13 @@ class HomeFragment : Fragment(), WorkoutManager.Listener {
     private val items: MutableList<SessionItem> = mutableListOf()
     private lateinit var workout: WorkoutManager
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Keep this fragment instance alive across rotation so WorkoutManager
+        // (and its running timers) survive the config change.
+        retainInstance = true
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,7 +62,14 @@ class HomeFragment : Fragment(), WorkoutManager.Listener {
         playPauseIcon = view.findViewById(R.id.play_pause_icon)
 
         SoundManager.init()
-        workout = WorkoutManager(this)
+
+        // Only create WorkoutManager on first load; on rotation the retained
+        // instance still holds the running workout, just reconnect the listener.
+        if (!::workout.isInitialized) {
+            workout = WorkoutManager(this)
+        } else {
+            workout.reconnectListener(this)
+        }
 
         db = dbHelper.writableDatabase
         loadItems()
@@ -102,6 +116,28 @@ class HomeFragment : Fragment(), WorkoutManager.Listener {
             timeContainer.visibility = View.VISIBLE
             adapter.setEditMode(false)
         }
+
+        // After rotation the views are blank but the workout may still be running.
+        // Re-drive the UI to match the current workout state.
+        syncUiToWorkoutState()
+    }
+
+    private fun syncUiToWorkoutState() {
+        val idx = workout.currentItemIndex
+        if (idx < 0) return
+
+        val row = items.getOrNull(idx) as? com.rama.txori.SessionItem.Row ?: return
+
+        taskNameView.text = row.task.label
+        updateTimerDisplay(workout.remainingMs)
+        updateNextTaskDisplay(idx, workout.activeSessionId)
+        adapter.setActiveItemIndex(idx)
+        adapter.setGroupPlayingState(workout.activeSessionId, workout.isRunning)
+        globalControllers.visibility = View.VISIBLE
+        editButton.visibility = if (workout.isRunning) View.GONE else View.VISIBLE
+        playPauseIcon.setImageResource(
+            if (workout.isRunning) R.drawable.icon_pause else R.drawable.icon_play
+        )
     }
 
     // WorkoutManager.Listener
@@ -137,8 +173,6 @@ class HomeFragment : Fragment(), WorkoutManager.Listener {
             if (playing) R.drawable.icon_pause else R.drawable.icon_play
         )
         editButton.visibility = if (playing) View.GONE else View.VISIBLE
-        // Hide the persistent navbar while a workout is running
-        (activity as? MainActivity)?.setNavbarVisible(!playing)
     }
 
     override fun onGroupFinished(sessionId: Long) {
@@ -150,7 +184,6 @@ class HomeFragment : Fragment(), WorkoutManager.Listener {
         playPauseIcon.setImageResource(R.drawable.icon_play)
         globalControllers.visibility = View.GONE
         editButton.visibility = View.VISIBLE
-        (activity as? MainActivity)?.setNavbarVisible(true)
     }
 
     override fun onGroupReset(sessionId: Long) {

@@ -1,7 +1,6 @@
 package com.rama.txori.activities
 
 import android.app.Fragment
-import android.app.FragmentManager
 import android.os.Bundle
 import android.view.View
 import com.rama.txori.CsActivity
@@ -13,6 +12,15 @@ class MainActivity : CsActivity() {
 
     private lateinit var navbar: WdNavbar
     private var currentPage: WdNavbar.Page = WdNavbar.Page.HOME
+
+    private fun fragmentForPage(page: WdNavbar.Page): Fragment =
+        fragmentManager.findFragmentByTag(page.name)
+            ?: when (page) {
+                WdNavbar.Page.HOME -> HomeFragment()
+                WdNavbar.Page.STOPWATCH -> StopwatchFragment()
+                WdNavbar.Page.TIMER -> TimerFragment()
+                WdNavbar.Page.ABOUT -> AboutFragment()
+            }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,16 +34,42 @@ class MainActivity : CsActivity() {
         navbar.onNavigate = { page -> navigateTo(page) }
 
         if (savedInstanceState == null) {
+            // First launch: add all fragments up front.
+            fragmentManager.beginTransaction()
+                .add(
+                    R.id.content_container,
+                    fragmentForPage(WdNavbar.Page.ABOUT),
+                    WdNavbar.Page.ABOUT.name
+                )
+                .add(
+                    R.id.content_container,
+                    fragmentForPage(WdNavbar.Page.TIMER),
+                    WdNavbar.Page.TIMER.name
+                )
+                .add(
+                    R.id.content_container,
+                    fragmentForPage(WdNavbar.Page.STOPWATCH),
+                    WdNavbar.Page.STOPWATCH.name
+                )
+                .add(
+                    R.id.content_container,
+                    fragmentForPage(WdNavbar.Page.HOME),
+                    WdNavbar.Page.HOME.name
+                )
+                .commitNow()
+
             navigateTo(WdNavbar.Page.HOME)
+
             findViewById<View>(R.id.root).post {
                 FontManager.applyToView(this, findViewById(R.id.root))
             }
         } else {
+            // Rotation: fragments already restored by FM — just re-apply visibility.
             currentPage = savedInstanceState
                 .getString(KEY_PAGE)
                 ?.let { WdNavbar.Page.valueOf(it) }
                 ?: WdNavbar.Page.HOME
-            navbar.setActivePage(currentPage)
+            navigateTo(currentPage)
         }
     }
 
@@ -43,32 +77,22 @@ class MainActivity : CsActivity() {
         super.onSaveInstanceState(outState)
         outState.putString(KEY_PAGE, currentPage.name)
     }
-    
+
     fun navigateTo(page: WdNavbar.Page) {
-        if (page == currentPage && fragmentManager.findFragmentById(R.id.content_container) != null) return
+        // Hide every fragment, then show only the target.
+        val tx = fragmentManager.beginTransaction()
+        WdNavbar.Page.entries.forEach { p ->
+            fragmentManager.findFragmentByTag(p.name)?.let { fragment ->
+                if (p == page) tx.show(fragment) else tx.hide(fragment)
+            }
+        }
+        tx.commitNow()
 
         currentPage = page
         navbar.setActivePage(page)
-
-        val fragment: Fragment = when (page) {
-            WdNavbar.Page.HOME -> HomeFragment()
-            WdNavbar.Page.STOPWATCH -> StopwatchFragment()
-            WdNavbar.Page.TIMER -> TimerFragment()
-            WdNavbar.Page.ABOUT -> AboutFragment()
-        }
-
-        fragmentManager
-            .beginTransaction()
-            .replace(R.id.content_container, fragment, page.name)
-            .commit()
-
-        // Re-apply font after fragment views are attached
-        fragmentManager.executePendingTransactions()
-        val root = findViewById<View>(R.id.root)
-        FontManager.applyToView(this, root)
+        FontManager.applyToView(this, findViewById(R.id.root))
     }
 
-    /** Let HomeFragment show/hide the navbar during a running workout. */
     fun setNavbarVisible(visible: Boolean) {
         navbar.visibility = if (visible) View.VISIBLE else View.GONE
     }

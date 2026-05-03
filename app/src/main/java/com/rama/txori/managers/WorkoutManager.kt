@@ -3,7 +3,7 @@ package com.rama.txori.managers
 import android.os.CountDownTimer
 import com.rama.txori.SessionItem
 
-class WorkoutManager(private val listener: Listener) {
+class WorkoutManager(private var listener: Listener) {
 
     interface Listener {
         fun onTaskStarted(index: Int, label: String, remainingMs: Long)
@@ -31,11 +31,16 @@ class WorkoutManager(private val listener: Listener) {
 
     private var taskTimer: CountDownTimer? = null
     private var globalTimer: CountDownTimer? = null
-    private var taskGeneration: Int = 0   // incremented on every new task; guards stale callbacks
+    private var taskGeneration: Int = 0
     private var lastBeepSecond: Long = -1
     private var taskDurationMs: Long = 0L
 
-    //  Public actions 
+    //  Public actions
+
+    /** Call after rotation to point callbacks at the new fragment view. */
+    fun reconnectListener(newListener: Listener) {
+        listener = newListener
+    }
 
     fun startGroup(sessionId: Long, startIndex: Int) {
         when {
