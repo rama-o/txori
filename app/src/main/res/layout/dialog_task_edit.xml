@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:padding="16sp"
     android:orientation="vertical"
-    android:background="@color/bg_primary"
+    android:background="@color/bg_1"
     android:focusableInTouchMode="true">
 
     <TextView

@@ -26,11 +26,11 @@ class TimerFragment : Fragment() {
     private lateinit var resetButton: WdButton
     private lateinit var editModeButton: WdButton
 
-    private var isRunning   = false
-    private var initialMs   = 0L
+    private var isRunning = false
+    private var initialMs = 0L
     private var remainingMs = 0L
-    private var isEditMode  = false
-    private var startTime   = 0L
+    private var isEditMode = false
+    private var startTime = 0L
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -38,11 +38,11 @@ class TimerFragment : Fragment() {
         override fun run() {
             if (!isRunning) return
             val elapsed = SystemClock.elapsedRealtime() - startTime
-            val msLeft  = remainingMs - elapsed
+            val msLeft = remainingMs - elapsed
             if (msLeft <= 0) {
                 timerButton.text = "00:00:00"
-                isRunning    = false
-                remainingMs  = 0L
+                isRunning = false
+                remainingMs = 0L
                 updateButtons()
                 return
             }
@@ -57,27 +57,54 @@ class TimerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.view_timer, container, false)
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val snapshotRemaining = if (isRunning) {
+            remainingMs - (SystemClock.elapsedRealtime() - startTime)
+        } else {
+            remainingMs
+        }
+        outState.putLong(KEY_INITIAL_MS, initialMs)
+        outState.putLong(KEY_REMAINING_MS, snapshotRemaining.coerceAtLeast(0L))
+        outState.putBoolean(KEY_IS_RUNNING, isRunning)
+        outState.putBoolean(KEY_IS_EDIT_MODE, isEditMode)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        timerButton    = view.findViewById(R.id.timer_button)
-        editView       = view.findViewById(R.id.edit_view)
-        timerInput     = view.findViewById(R.id.timer)
-        addTimer       = view.findViewById(R.id.add_timer)
-        startButton    = view.findViewById(R.id.start_timer)
-        resetButton    = view.findViewById(R.id.reset_timer)
+        timerButton = view.findViewById(R.id.timer_button)
+        editView = view.findViewById(R.id.edit_view)
+        timerInput = view.findViewById(R.id.timer)
+        addTimer = view.findViewById(R.id.add_timer)
+        startButton = view.findViewById(R.id.start_timer)
+        resetButton = view.findViewById(R.id.reset_timer)
         editModeButton = view.findViewById(R.id.edit_mode)
 
         timerButton.text = "00:00:00"
 
         editModeButton.setOnClickListener { setEditMode(!isEditMode) }
-        timerButton.setOnClickListener    { toggleTimer() }
+        timerButton.setOnClickListener { toggleTimer() }
         timerButton.setOnLongClickListener { resetTimer(); true }
-        startButton.setOnClickListener   { toggleTimer() }
-        addTimer.setOnClickListener      { applyInput() }
-        resetButton.setOnClickListener   { resetTimer() }
+        startButton.setOnClickListener { toggleTimer() }
+        addTimer.setOnClickListener { applyInput() }
+        resetButton.setOnClickListener { resetTimer() }
 
         updateButtons()
+
+        // Restore state after rotation
+        if (savedInstanceState != null) {
+            initialMs = savedInstanceState.getLong(KEY_INITIAL_MS, 0L)
+            remainingMs = savedInstanceState.getLong(KEY_REMAINING_MS, 0L)
+            isEditMode = savedInstanceState.getBoolean(KEY_IS_EDIT_MODE, false)
+            timerButton.text = formatMillis(remainingMs)
+            updateEditModeUI()
+            if (savedInstanceState.getBoolean(KEY_IS_RUNNING, false)) {
+                startTimer()
+            } else {
+                updateButtons()
+            }
+        }
     }
 
     private fun toggleTimer() {
@@ -86,10 +113,10 @@ class TimerFragment : Fragment() {
     }
 
     private fun updateButtons() {
-        val hasTimer       = initialMs > 0L
-        val canStart       = remainingMs > 0L
+        val hasTimer = initialMs > 0L
+        val canStart = remainingMs > 0L
         val hasTimerActive = remainingMs > 0L
-        val showNavbar     = !isRunning || remainingMs <= 0L || isEditMode
+        val showNavbar = !isRunning || remainingMs <= 0L || isEditMode
 
         startButton.visibility =
             if (hasTimer && !isEditMode && hasTimerActive) View.VISIBLE else View.GONE
@@ -97,16 +124,14 @@ class TimerFragment : Fragment() {
             if (hasTimer && !isEditMode) View.VISIBLE else View.GONE
         startButton.setText(if (isRunning) "Pause timer" else "Start timer")
         startButton.isEnabled = canStart || isRunning
-
-        (activity as? MainActivity)?.setNavbarVisible(showNavbar)
     }
 
     private fun updateEditModeUI() {
         if (isEditMode) {
             editModeButton.setText("Switch to work mode")
             timerButton.visibility = View.GONE
-            editView.visibility    = View.VISIBLE
-            addTimer.visibility    = View.VISIBLE
+            editView.visibility = View.VISIBLE
+            addTimer.visibility = View.VISIBLE
 
             val digits = timerButton.text.toString()
                 .filter { it.isDigit() }.takeLast(6).trimStart('0')
@@ -116,8 +141,8 @@ class TimerFragment : Fragment() {
             showKeyboard()
         } else {
             editModeButton.setText("Switch to edit mode")
-            editView.visibility    = View.GONE
-            addTimer.visibility    = View.GONE
+            editView.visibility = View.GONE
+            addTimer.visibility = View.GONE
             timerButton.visibility = View.VISIBLE
             hideKeyboard()
         }
@@ -130,10 +155,10 @@ class TimerFragment : Fragment() {
     }
 
     private fun applyInput() {
-        val digits    = timerInput.text.toString().filter { it.isDigit() }.takeLast(6)
+        val digits = timerInput.text.toString().filter { it.isDigit() }.takeLast(6)
         timerButton.text = formatDigits(digits)
-        initialMs    = digitsToMillis(digits)
-        remainingMs  = initialMs
+        initialMs = digitsToMillis(digits)
+        remainingMs = initialMs
         updateButtons()
         setEditMode(false)
     }
@@ -149,14 +174,14 @@ class TimerFragment : Fragment() {
     private fun pauseTimer() {
         if (!isRunning) return
         remainingMs -= SystemClock.elapsedRealtime() - startTime
-        isRunning   = false
+        isRunning = false
         handler.removeCallbacks(ticker)
         updateButtons()
     }
 
     private fun resetTimer() {
         handler.removeCallbacks(ticker)
-        isRunning   = false
+        isRunning = false
         remainingMs = initialMs
         timerButton.text = formatMillis(initialMs)
         updateButtons()
@@ -193,5 +218,12 @@ class TimerFragment : Fragment() {
     override fun onDestroyView() {
         handler.removeCallbacks(ticker)
         super.onDestroyView()
+    }
+
+    companion object {
+        private const val KEY_INITIAL_MS = "initial_ms"
+        private const val KEY_REMAINING_MS = "remaining_ms"
+        private const val KEY_IS_RUNNING = "is_running"
+        private const val KEY_IS_EDIT_MODE = "is_edit_mode"
     }
 }

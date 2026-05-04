@@ -181,11 +181,11 @@ class SessionAdapter(
                 // Collect all items belonging to each session
                 val thisGroup = items.filter {
                     (it is SessionItem.Header && it.sessionId == header.sessionId) ||
-                    (it is SessionItem.Row && it.sessionId == header.sessionId)
+                            (it is SessionItem.Row && it.sessionId == header.sessionId)
                 }
                 val prevGroup = items.filter {
                     (it is SessionItem.Header && it.sessionId == prevHeader.sessionId) ||
-                    (it is SessionItem.Row && it.sessionId == prevHeader.sessionId)
+                            (it is SessionItem.Row && it.sessionId == prevHeader.sessionId)
                 }
                 items.removeAll(thisGroup.toSet())
                 items.removeAll(prevGroup.toSet())
@@ -201,17 +201,18 @@ class SessionAdapter(
         descendButton.setOnClickListener {
             val idx = items.indexOf(header)
             // Find the header immediately below this one
-            val nextHeaderIdx = (idx + 1 until items.size).firstOrNull { items[it] is SessionItem.Header }
+            val nextHeaderIdx =
+                (idx + 1 until items.size).firstOrNull { items[it] is SessionItem.Header }
             if (nextHeaderIdx != null) {
                 val nextHeader = items[nextHeaderIdx] as SessionItem.Header
                 dbHelper.swapSessionOrder(db, header.sessionId, nextHeader.sessionId)
                 val thisBlock = items.filter {
                     (it is SessionItem.Header && it.sessionId == header.sessionId) ||
-                    (it is SessionItem.Row && it.sessionId == header.sessionId)
+                            (it is SessionItem.Row && it.sessionId == header.sessionId)
                 }
                 val nextBlock = items.filter {
                     (it is SessionItem.Header && it.sessionId == nextHeader.sessionId) ||
-                    (it is SessionItem.Row && it.sessionId == nextHeader.sessionId)
+                            (it is SessionItem.Row && it.sessionId == nextHeader.sessionId)
                 }
                 items.removeAll(thisBlock.toSet())
                 items.removeAll(nextBlock.toSet())
@@ -460,7 +461,10 @@ class SessionAdapter(
 
             dbHelper.addTaskToSession(db, header.sessionId, label, duration)
 
-            val newTask = Task(label = label, duration = duration)
+            // Reload tasks from DB so the new task carries its real stepId.
+            // Without it, swapStepOrder queries id=0 and silently fails.
+            val freshTasks = dbHelper.getSessionTasks(db, header.sessionId)
+            val newTask = freshTasks.lastOrNull() ?: Task(label = label, duration = duration)
 
             var insertAt = headerPosition + 1
             while (insertAt < items.size && items[insertAt] is SessionItem.Row) insertAt++

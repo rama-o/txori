@@ -1,7 +1,7 @@
 <resources>
     <!-- Base theme -->
     <style name="Theme.Txori" parent="android:Theme.DeviceDefault.NoActionBar">
-        <item name="bgColor">@color/bg_primary</item>
+        <item name="bgColor">@color/bg_1</item>
         <item name="foregroundColor">@color/foreground</item>
 
         <item name="android:windowBackground">?attr/bgColor</item>
