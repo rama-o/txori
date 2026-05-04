@@ -12,3 +12,4 @@
 - Prevent fragments to be destroyed when phone orientation change or switch between views
 - Prevent navigation bar to ever disappear
 - Prevent new tasks to start from the wrong order (step-id)
+- Lock button that prevent screen for going to sleep
