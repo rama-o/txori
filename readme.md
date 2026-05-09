@@ -1,5 +1,11 @@
 ![Preview](./docs/img/txori_header_1280x630.svg)
 
+<p align="center">
+  <a href="https://github.com/rama-io/txori/releases/latest"><img src="https://img.shields.io/github/v/release/rama-io/txori?label=release&color=127c77" alt="Release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPLv3%20or%20Later-1d8f58" alt="License: GPLv3 or Later"></a>
+  <a href="https://github.com/rama-io/txori/releases"><img src="https://img.shields.io/github/downloads/rama-io/txori/total?color=blue" alt="Downloads"></a>
+</p>
+
 # Txori
 
 **Txori** is a minimal, privacy-first focus session app designed to help you stay present and
