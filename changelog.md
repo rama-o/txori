@@ -1,5 +1,9 @@
 # Changelog
 
+## 5
+
+- Fixing crash when creating a new group in android 6
+
 ## 4
 
 - Prevent fragments to be destroyed when phone orientation change or switch between views
