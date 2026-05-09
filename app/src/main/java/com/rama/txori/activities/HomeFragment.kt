@@ -223,7 +223,8 @@ class HomeFragment : Fragment(), WorkoutManager.Listener {
     }
 
     private fun showAddGroupDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_session_edit, null)
+        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_session_edit, null)
+
         FontManager.applyToView(activity, dialogView)
         val dialog = AlertDialog.Builder(activity).setView(dialogView).create()
         val input = dialogView.findViewById<EditText>(R.id.edit_text)
